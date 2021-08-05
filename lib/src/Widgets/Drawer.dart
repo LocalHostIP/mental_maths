@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:localstore/localstore.dart';
-import 'dart:async';
 
 getDrawer(BuildContext context){
   return Drawer(

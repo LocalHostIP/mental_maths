@@ -24,7 +24,7 @@ class MathProblem{
 
   void generateProblems(){
     finished=false;
-    /// Creates all problems acording to levels///
+    /// Creates all problems according to levels///
     String op;
     int level;
     var nLength;
@@ -75,6 +75,7 @@ class MathProblem{
   int getLevel(){
     return operations[currentIndex].level;
   }
+
   bool finished=false;
 
   void startClock(){
@@ -106,7 +107,7 @@ class MathProblem{
   }
 
   void increaseTimePenalization(int t){
-    operations[currentIndex].time_penalization+=t;
+    operations[currentIndex].timePenalization+=t;
   }
 
   double getLastTime(){
@@ -147,7 +148,18 @@ class Operation{
   int level=0;
   num sol=0;
   int time=-1;
-  int time_penalization=0;
+  int timePenalization=0;
+
+  //ToJson -- For saving on files
+  Map<String,dynamic> toJson()=>{
+    'operator':operator,
+    'n1':n1,
+    'n2':n2,
+    'level':level,
+    'time':time,
+    'sol':sol,
+    'time_penalization':timePenalization,
+  };
 
   Operation({required this.operator,required this.n1,required this.n2,required this.level}){
     if (this.operator==MathProblem.OPSum)
@@ -158,9 +170,26 @@ class Operation{
       throw(this.operator+' is not a valid operator');
   }
 
+  static List<Operation> readListFromJson(List<dynamic> opJson){
+    List<Operation> op = [];
+    for (Map<String,dynamic> o in opJson){
+      op.add(Operation.fromJson(o));
+    }
+    return op;
+  }
+
+  Operation.fromJson(Map<String,dynamic> json):
+        n1 = json['n1'],
+        level = json['level'],
+        n2 = json['n2'],
+        sol = json['sol'],
+        time = json['time'],
+        timePenalization = json['timePenalization'],
+        operator = json['operator'];
+
   Operation.result({required this.operator,required this.time,required this.level});
 
   void setTime(int t){
-    this.time=time_penalization+t;
+    this.time=timePenalization+t;
   }
 }

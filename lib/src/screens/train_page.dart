@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mental_maths/src/problems_generator.dart';
+import 'package:mental_maths/src/saving.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 import 'package:input_with_keyboard_control/input_with_keyboard_control.dart';
 
@@ -10,9 +12,14 @@ import '../config.dart';
 import '../results.dart';
 
 class TrainPage extends StatefulWidget {
-  TrainPage({Key? key, required this.tsettigns,required this.results}) : super(key: key);
-  TrainingSettings tsettigns;
-  Results results;
+  TrainingSettings tsettigns; //General settings, including Type of problmes
+  Savings savings;
+  late Results results; //Register of results
+
+  TrainPage({Key? key, required this.tsettigns,required this.savings}) : super(key: key){
+    results = savings.results;
+  }
+
   @override
   _TrainPageState createState() => _TrainPageState();
 }
@@ -92,34 +99,31 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
           width: width*0.75,
           height: height*0.11,
 
-          child:GestureDetector(
-            child: TextField(
-              controller: _controllerField,
-              style: _inputStyle,
-              autofocus: true,
-              textAlign: TextAlign.center,
-              showCursor: true,
-              focusNode: _focusNodeField,
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-              ],
-              onTap: (){SystemChannels.textInput.invokeMethod('TextInput.hide');},
-              decoration: new InputDecoration(
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                contentPadding:
-                  EdgeInsets.only(left: 15, bottom: 0, top: 11, right: 15),
-              ),
-              onSubmitted: (ch)=>inputChanged(ch,submitted: true),
-            ),
+          child: TextField(
+            controller: _controllerField,
+            style: _inputStyle,
+            autofocus: true,
+            textAlign: TextAlign.center,
+            showCursor: true,
+            readOnly: (Platform.isAndroid || Platform.isIOS),
+            focusNode: _focusNodeField,
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+            ],
             onTap: (){SystemChannels.textInput.invokeMethod('TextInput.hide');},
-            onTapCancel: (){SystemChannels.textInput.invokeMethod('TextInput.hide');},
-            onLongPress: (){SystemChannels.textInput.invokeMethod('TextInput.hide');},
-          )
+            decoration: new InputDecoration(
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              contentPadding:
+                EdgeInsets.only(left: 15, bottom: 0, top: 11, right: 15),
+            ),
+            onSubmitted: (ch)=>inputChanged(ch,submitted: true),
+          ),
+
         ),
       ),
       //Separation
@@ -179,11 +183,6 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     });
     _opacityTimePenalText = CurvedAnimation(parent: _cAnimationTimePenalText, curve: Curves.easeOut);
 
-    //When input looses or gets focus hide keyboard
-    _focusNodeField.addListener(() {
-      SystemChannels.textInput.invokeMethod('TextInput.hide');
-    });
-
     //Create MathProblems
     //create levels array
     List<List<int>> lvls = [];
@@ -197,7 +196,6 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
 
     showOperation();
 
-    SystemChannels.textInput.invokeMethod('TextInput.hide');
     super.initState();
   }
 
@@ -246,10 +244,6 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
 
   void inputChanged(String ch,{bool submitted=false}){
     /// checks if input has the answer when it changes///
-
-    //Hides keyboard on android and ios
-    SystemChannels.textInput.invokeMethod('TextInput.hide');
-
     //When entered is pressed input looses focus, this returns focus to input
     _controllerField.text=ch;
     FocusScope.of(context).requestFocus(_focusNodeField);
@@ -298,7 +292,12 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
   }
 
   void _showResults(BuildContext context){
+    //update results
     widget.results.updateRegister(mathProblem.operations);
+    //save results
+    widget.savings.writeResults(widget.savings.results);
+    //Open results page
     Navigator.of(context).pushNamed('/resultsPage');
   }
+
 }

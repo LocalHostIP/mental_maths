@@ -17,9 +17,9 @@ class TrainResultsPage extends StatelessWidget {
           appBar: AppBar(
             bottom: TabBar(
               tabs: [
-                Tab(text: 'All',),
                 Tab(text: 'Last '+Results.nv2.toString()),
                 Tab(text: 'Last '+Results.nv3.toString()),
+                Tab(text: 'All',)
               ],
             ),
             title: Text('Results'),
@@ -29,17 +29,17 @@ class TrainResultsPage extends StatelessWidget {
             children: [
               Card(
                 child: Column(
-                  children: getTiles(1),
-                ),
-              ),
-              Card(
-                child: Column(
                   children: getTiles(2),
                 ),
               ),
               Card(
                 child: Column(
                   children: getTiles(3),
+                ),
+              ),
+              Card(
+                child: Column(
+                  children: getTiles(1),
                 ),
               ),
             ],

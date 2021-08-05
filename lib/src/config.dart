@@ -8,9 +8,9 @@ class TrainingSettings{
   bool addition=true;
   bool subtraction=false;
   List<int> addLevels = [1];
-  List<int> subLevels = [1]; //substraction levels
+  List<int> subLevels = [1]; //subtraction levels
   String currentOPSettings=MathProblem.OPSum;
-  int limitOP=10;
+  int limitOP=10; //Amount of operations
 
   List<String> getActiveOperators(){
     List<String> op = [];

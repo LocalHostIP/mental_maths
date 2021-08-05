@@ -6,6 +6,16 @@ class Results{
   List<List<int>> updated = []; //Contains the newly updated levels
   int maxLevel = 7; //Current max level on operations
 
+  Results.fromJson(Map<String,dynamic> json):
+    addition = OpRegister.readListFromJson(json['addition']),
+    subtraction = OpRegister.readListFromJson(json['subtraction']);
+
+  Map <String,dynamic> toJson() =>
+    {
+      'addition':addition,
+      'subtraction':subtraction,
+    };
+
   Results(){
     //Initiate all levels on every operation
     for (int l = 1;l<=maxLevel;l++){
@@ -75,6 +85,48 @@ class OpRegister{
   
   OpRegister({required this.name,required this.level});
 
+  OpRegister.fromJson(Map<String,dynamic> json):
+        name = json['name'],
+        level = json['level'],
+        nTotal = json['nTotal'],
+        sum = json['sum'],
+        promTotal = json['promTotal'],
+        lastPromTotal = json['lastPromTotal'],
+        history = Operation.readListFromJson(json['history']),
+        promV2 = json['promV2'],
+        lastPromV2 = json['lastPromV2'],
+        promV3 = json['promV3'],
+        lastPromV3 = json['lastPromV3'],
+        isNew = json['isNew'],
+        isV2 = json['isV2'],
+        isV3 = json['isV3'];
+
+  static List<OpRegister> readListFromJson(List<dynamic> opJson){
+    List<OpRegister> op = [];
+    for (Map<String,dynamic> o in opJson){
+      op.add(OpRegister.fromJson(o));
+    }
+    return op;
+  }
+
+  //ToJson -- For saving on files
+  Map<String,dynamic> toJson()=>{
+    'name':name,
+    'level':level,
+    'nTotal':nTotal,
+    'sum':sum,
+    'promTotal':promTotal,
+    'lastPromTotal':lastPromTotal,
+    'history':history,
+    'promV2':promV2,
+    'lastPromV2':lastPromV2,
+    'promV3':promV3,
+    'lastPromV3':lastPromV3,
+    'isNew':isNew,
+    'isV2':isV2,
+    'isV3':isV3
+  };
+
   void updateLastProm(){
     lastPromTotal=promTotal;
     lastPromV2=promV2;
@@ -84,7 +136,6 @@ class OpRegister{
   void updateProm(){
     promTotal=sum/nTotal/10;
     promTotal=promTotal.round()/100;
-
 
     if (history.length>=Results.nv2){
       promV2=getSum(history,Results.nv2)/Results.nv2/10;

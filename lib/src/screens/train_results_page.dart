@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mental_maths/src/Widgets/Drawer.dart';
-import 'package:mental_maths/src/results.dart';
+import 'package:mental_maths/src/math_op/operation_register.dart';
+import 'package:mental_maths/src/widgets/Drawer.dart';
+import 'package:mental_maths/src/math_op/results.dart';
 
-class TrainResultsPage extends StatelessWidget {
+class TrainResultsPage extends StatelessWidget {//ignore: must_be_immutable
 
   TrainResultsPage({Key? key,required this.results}) : super(key: key);
 
@@ -70,7 +71,7 @@ class TrainResultsPage extends StatelessWidget {
 
   Widget getTile(String operationName,OpRegister op,int type){
     ///
-    ///Returns the Promedio ListTile corresponding to the operation, it needs a type of media
+    ///Returns the Promedio ListTile corresponding to the operation.dart, it needs a type of media
     ///type: 1=Total, 2=PromV2, 3=PromV3
     ///
     String sign='+';

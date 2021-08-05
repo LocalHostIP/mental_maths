@@ -3,20 +3,19 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mental_maths/src/problems_generator.dart';
+import 'package:mental_maths/src/math_op/math_problems.dart';
 import 'package:mental_maths/src/saving.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
-import 'package:input_with_keyboard_control/input_with_keyboard_control.dart';
 
 import '../config.dart';
-import '../results.dart';
+import '../math_op/results.dart';
 
-class TrainPage extends StatefulWidget {
-  TrainingSettings tsettigns; //General settings, including Type of problmes
+class TrainPage extends StatefulWidget {//ignore: must_be_immutable
+  TrainingSettings tSettings; //General settings, including Type of problmes
   Savings savings;
   late Results results; //Register of results
 
-  TrainPage({Key? key, required this.tsettigns,required this.savings}) : super(key: key){
+  TrainPage({Key? key, required this.tSettings,required this.savings}) : super(key: key){
     results = savings.results;
   }
 
@@ -33,7 +32,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
   late final Animation<double> _opacityTimePenalText;
   String timeInfo='+2s';
   
-  late MathProblem mathProblem;
+  late MathProblems mathProblem;
   Color _colorInput = Colors.black54;
 
   TextStyle timeTextStyle = TextStyle(color: Colors.red);
@@ -186,10 +185,10 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     //Create MathProblems
     //create levels array
     List<List<int>> lvls = [];
-    var ops=widget.tsettigns.getActiveOperators();
+    var ops=widget.tSettings.getActiveOperators();
     for (String op in ops)
-      lvls.add(widget.tsettigns.getLevels(op));
-    mathProblem = MathProblem(widget.tsettigns.limitOP,ops,lvls);
+      lvls.add(widget.tSettings.getLevels(op));
+    mathProblem = MathProblems(widget.tSettings.limitOP,ops,lvls);
 
     //Start first problem timer
     mathProblem.nextProblem();

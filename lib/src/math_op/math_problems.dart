@@ -1,22 +1,24 @@
 import 'dart:math';
 
-class MathProblem{
+import 'operation.dart';
+
+class MathProblems{
   /// Class for generating and controlling math problems ///
   Random random = new Random();
   final List<String> operators; //Possible operators
   final int limit; //Amount of operations
-  late final List<int> lvlSum; //Level of operations
-  late final List<int> lvlSub;
+  late List<int> lvlSum; //Level of operations
+  late List<int> lvlSub;
   int currentIndex=-1; //Current index problem
   Stopwatch _stopwatch = Stopwatch();
 
   List<Operation> operations=[]; //Al problems (operations)
 
-  MathProblem(this.limit,this.operators,List<List<int>> lvls){
+  MathProblems(this.limit,this.operators,List<List<int>> lvls){
     for (int i=0;i<operators.length;i++){
-      if(operators[i]==MathProblem.OPSum)
+      if(operators[i]==MathProblems.OPSum)
         lvlSum=lvls[i];
-      else if(operators[i]==MathProblem.OPRest)
+      else if(operators[i]==MathProblems.OPSub)
         lvlSub=lvls[i];
     }
     generateProblems();
@@ -37,9 +39,9 @@ class MathProblem{
 
       //Get level according to operator
       level=2;
-      if(op==MathProblem.OPSum)
+      if(op==MathProblems.OPSum)
         level=lvlSum[random.nextInt(lvlSum.length)]; //get a random level
-      else if (op==MathProblem.OPRest)
+      else if (op==MathProblems.OPSub)
         level=lvlSub[random.nextInt(lvlSub.length)]; //get a random level
 
       nLength= this.getLengthNumbers(level); // get Lenght of numbers
@@ -49,7 +51,7 @@ class MathProblem{
       n2=inf2+random.nextInt(inf2*10-inf2);
 
       //If rest is negative change numbers order
-      if (op==MathProblem.OPRest && n1-n2<0){
+      if (op==MathProblems.OPSub && n1-n2<0){
         var aux=n2;
         n2=n1;
         n1=aux;
@@ -127,7 +129,7 @@ class MathProblem{
     }
     else{
       out=[half,half-1];
-      //Shufle order
+      //Shuffle order
       if (random.nextBool()){
         int aux = out[0];
         out[0]=out[1];
@@ -137,59 +139,6 @@ class MathProblem{
     return out;
   }
 
-  static String OPSum = '+';
-  static String OPRest = '-';
-}
-
-class Operation{
-  String operator=MathProblem.OPSum;
-  num n1=0;
-  num n2=0;
-  int level=0;
-  num sol=0;
-  int time=-1;
-  int timePenalization=0;
-
-  //ToJson -- For saving on files
-  Map<String,dynamic> toJson()=>{
-    'operator':operator,
-    'n1':n1,
-    'n2':n2,
-    'level':level,
-    'time':time,
-    'sol':sol,
-    'time_penalization':timePenalization,
-  };
-
-  Operation({required this.operator,required this.n1,required this.n2,required this.level}){
-    if (this.operator==MathProblem.OPSum)
-      this.sol=n1+n2;
-    else if(this.operator==MathProblem.OPRest)
-      this.sol=n1-n2;
-    else
-      throw(this.operator+' is not a valid operator');
-  }
-
-  static List<Operation> readListFromJson(List<dynamic> opJson){
-    List<Operation> op = [];
-    for (Map<String,dynamic> o in opJson){
-      op.add(Operation.fromJson(o));
-    }
-    return op;
-  }
-
-  Operation.fromJson(Map<String,dynamic> json):
-        n1 = json['n1'],
-        level = json['level'],
-        n2 = json['n2'],
-        sol = json['sol'],
-        time = json['time'],
-        timePenalization = json['timePenalization'],
-        operator = json['operator'];
-
-  Operation.result({required this.operator,required this.time,required this.level});
-
-  void setTime(int t){
-    this.time=timePenalization+t;
-  }
+  static const String OPSum = '+';
+  static const String OPSub = '-';
 }

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:mental_maths/src/results.dart';
+import 'package:mental_maths/src/math_op/results.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Savings{

@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mental_maths/src/Widgets/Drawer.dart';
+import 'package:mental_maths/src/widgets/Drawer.dart';
 import 'package:mental_maths/src/config.dart';
-import 'package:mental_maths/src/problems_generator.dart';
+import 'package:mental_maths/src/math_op/math_problems.dart';
 
-class StartTrainPage extends StatefulWidget {
-  StartTrainPage({Key? key, required this.tsettigns}) : super(key: key);
-  TrainingSettings tsettigns = new TrainingSettings();
+class StartTrainPage extends StatefulWidget { //ignore: must_be_immutable
+  StartTrainPage({Key? key, required this.tSettings}) : super(key: key);
+  TrainingSettings tSettings = new TrainingSettings();
   @override
   _StartTrainPageState createState() => _StartTrainPageState();
 }
@@ -39,12 +39,12 @@ class _StartTrainPageState extends State<StartTrainPage>  {
             child: Column(
               children: [
                 ListTile(
-                  leading: Checkbox(value: widget.tsettigns.addition,
+                  leading: Checkbox(value: widget.tSettings.addition,
                     onChanged: (ch){
                       setState(() {
-                        widget.tsettigns.addition=ch!;
-                        if(widget.tsettigns.getActiveOperators().length==0){
-                          widget.tsettigns.addition=true;
+                        widget.tSettings.addition=ch!;
+                        if(widget.tSettings.getActiveOperators().length==0){
+                          widget.tSettings.addition=true;
                         }
                       });
                     },
@@ -56,17 +56,17 @@ class _StartTrainPageState extends State<StartTrainPage>  {
                       ]),
                   trailing: Icon(Icons.keyboard_arrow_right),
                   onTap: (){
-                    _showConfigLevelsPage(context,MathProblem.OPSum);
+                    _showConfigLevelsPage(context,MathProblems.OPSum);
                   },
                 ),
                 const Divider(),
                 ListTile(
-                  leading: Checkbox(value: widget.tsettigns.subtraction,
+                  leading: Checkbox(value: widget.tSettings.subtraction,
                     onChanged: (ch){
                       setState(() {
-                        widget.tsettigns.subtraction=ch!;
-                        if(widget.tsettigns.getActiveOperators().length==0){
-                          widget.tsettigns.subtraction=true;
+                        widget.tSettings.subtraction=ch!;
+                        if(widget.tSettings.getActiveOperators().length==0){
+                          widget.tSettings.subtraction=true;
                         }
                       });
                     }),
@@ -77,7 +77,7 @@ class _StartTrainPageState extends State<StartTrainPage>  {
                       ]),
                   trailing: Icon(Icons.keyboard_arrow_right),
                   onTap: (){
-                    _showConfigLevelsPage(context,MathProblem.OPRest);
+                    _showConfigLevelsPage(context,MathProblems.OPSub);
                   },
                 ),
               ],
@@ -94,7 +94,7 @@ class _StartTrainPageState extends State<StartTrainPage>  {
               setState(() {
                 limit=ch;
               });
-              widget.tsettigns.limitOP=limit.round();
+              widget.tSettings.limitOP=limit.round();
           },
             max: 30,
             min: 2,
@@ -107,7 +107,7 @@ class _StartTrainPageState extends State<StartTrainPage>  {
   }
 
   void _showConfigLevelsPage(BuildContext context,String op) {
-    widget.tsettigns.currentOPSettings=op;
+    widget.tSettings.currentOPSettings=op;
     Navigator.of(context).pushNamed("/configLevels");
   }
 
@@ -120,14 +120,14 @@ class _StartTrainPageState extends State<StartTrainPage>  {
     // TODO: implement initState
     //Create lvl label on addition
     lvlSum='';
-    for (int i in widget.tsettigns.getLevels(MathProblem.OPSum)){
+    for (int i in widget.tSettings.getLevels(MathProblems.OPSum)){
       lvlSum=lvlSum+i.toString()+',';
     }
     lvlSum= lvlSum.substring(0,lvlSum.length-1);
 
     //Create lvl label on subtraction
     lvlSub='';
-    for (int i in widget.tsettigns.getLevels(MathProblem.OPRest)){
+    for (int i in widget.tSettings.getLevels(MathProblems.OPSub)){
       lvlSub=lvlSub+i.toString()+',';
     }
     lvlSub=lvlSub.substring(0,lvlSub.length-1);

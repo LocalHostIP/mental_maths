@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mental_maths/src/config.dart';
-import 'package:mental_maths/src/problems_generator.dart';
+import 'package:mental_maths/src/math_op/math_problems.dart';
 
 class ConfigLevelsPage extends StatefulWidget {
   ConfigLevelsPage({Key? key, required this.tsettigns}) : super(key: key);
@@ -152,9 +152,9 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
   void initState() {
     // TODO: implement initState
     op=widget.tsettigns.currentOPSettings;
-    if(op==MathProblem.OPSum)
+    if(op==MathProblems.OPSum)
       operationTitle='Addition';
-    else if(op==MathProblem.OPRest)
+    else if(op==MathProblems.OPSub)
       operationTitle='Subtraction';
 
     for (int i in widget.tsettigns.getLevels(op)){

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mental_maths/src/Widgets/Drawer.dart';
-import 'package:mental_maths/src/results.dart';
+import 'package:mental_maths/src/math_op/operation_register.dart';
+import 'package:mental_maths/src/widgets/Drawer.dart';
+import 'package:mental_maths/src/math_op/math_problems.dart';
+import 'package:mental_maths/src/math_op/results.dart';
 
 import '../saving.dart';
 
-class AllResultsPage extends StatefulWidget {
+class AllResultsPage extends StatefulWidget { //ignore: must_be_immutable
   late Results results;
   Savings savings;
   AllResultsPage({Key? key, required this.savings}) : super(key: key) {
@@ -16,8 +18,9 @@ class AllResultsPage extends StatefulWidget {
 }
 
 class _AllResultsPageState extends State<AllResultsPage> {
-  @override
   late Results results;
+
+  @override
   Widget build(BuildContext context) {
     results = widget.results;
     return MaterialApp(
@@ -43,13 +46,13 @@ class _AllResultsPageState extends State<AllResultsPage> {
                 child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal, child: getTable(1))),
+                        scrollDirection: Axis.horizontal, child: getTable(MathProblems.OPSum))),
               ),
               Card(
                 child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal, child: getTable(2))),
+                        scrollDirection: Axis.horizontal, child: getTable(MathProblems.OPSub))),
               ),
             ],
           ),
@@ -58,7 +61,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
     );
   }
 
-  Widget getTable(int type) {
+  Widget getTable(String type) {
     return DataTable(
       columns: <DataColumn>[
         DataColumn(
@@ -96,9 +99,9 @@ class _AllResultsPageState extends State<AllResultsPage> {
     );
   }
 
-  List<DataRow> getDataRows(int type) {
+  List<DataRow> getDataRows(String type) {
     var listType = results.addition;
-    if (type == 2) listType = results.subtraction;
+    if (type == MathProblems.OPSub) listType = results.subtraction;
 
     List<DataRow> dts = [];
 
@@ -111,7 +114,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
     return dts;
   }
 
-  DataRow getDataRow(OpRegister o, int type) {
+  DataRow getDataRow(OpRegister o, String type) {
     Widget v2 = Icon(
       Icons.horizontal_rule,
       color: Colors.black54,

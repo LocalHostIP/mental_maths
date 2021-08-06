@@ -84,8 +84,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(onPressed: (){}, child: Text('Listen')),
-                  TextButton(onPressed: (){showOperation();showTimePenal(2);}, child: Text('View')),
+                  TextButton(onPressed: (){showOperation();showTimePenal(3+mathProblem.getLevel());}, child: Text('View')),
                 ],
               )
             ],

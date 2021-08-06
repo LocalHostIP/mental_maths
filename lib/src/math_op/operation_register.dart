@@ -16,8 +16,6 @@ class OpRegister{
   double lastPromV3=0;
 
   bool isNew=true;
-  bool isV2=false;
-  bool isV3=false;
 
   OpRegister({required this.name,required this.level});
 
@@ -33,9 +31,7 @@ class OpRegister{
         lastPromV2 = json['lastPromV2'],
         promV3 = json['promV3'],
         lastPromV3 = json['lastPromV3'],
-        isNew = json['isNew'],
-        isV2 = json['isV2'],
-        isV3 = json['isV3'];
+        isNew = json['isNew'];
 
   static List<OpRegister> readListFromJson(List<dynamic> opJson){
     List<OpRegister> op = [];
@@ -59,8 +55,6 @@ class OpRegister{
     'promV3':promV3,
     'lastPromV3':lastPromV3,
     'isNew':isNew,
-    'isV2':isV2,
-    'isV3':isV3
   };
 
   void updateLastProm(){
@@ -76,20 +70,14 @@ class OpRegister{
     if (history.length>=Results.nv2){
       promV2=getSum(history,Results.nv2)/Results.nv2/10;
       promV2=promV2.round()/100;
-      isV2=true;
-    }else{
-      promV2=0;
-      isV2=false;
-    }
+    }else
+      promV2=promTotal;
 
     if (history.length>=Results.nv3){
       promV3=getSum(history,Results.nv3)/Results.nv3/10;
       promV3=promV3.round()/100;
-      isV3=true;
-    }else{
-      promV3=0;
-      isV3=false;
-    }
+    }else
+      promV3=promTotal;
   }
 
   void addOperation(Operation op){
@@ -114,8 +102,6 @@ class OpRegister{
     lastPromV3=0;
 
     isNew=true;
-    isV2=false;
-    isV3=false;
   }
 
   double getSum(List<Operation> operations,int n){

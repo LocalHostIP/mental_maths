@@ -82,20 +82,17 @@ class TrainResultsPage extends StatelessWidget {//ignore: must_be_immutable
     double  df = op.getDifference();
     double pm = op.promTotal;
     String subtitle = 'lvl '+ op.level.toString() +' (total: '+op.nTotal.toString()+')';
-    bool available=true;
 
     switch(type){
       case 2:
         df=op.getDifferenceV2();
         pm=op.promV2;
         subtitle = 'lvl '+ op.level.toString();
-        available=op.isV2;
         break;
       case 3:
         df=op.getDifferenceV3();
         pm=op.promV3;
         subtitle = 'lvl '+ op.level.toString();
-        available=op.isV3;
         break;
     }
 
@@ -112,12 +109,9 @@ class TrainResultsPage extends StatelessWidget {//ignore: must_be_immutable
       arrow=Icons.gps_fixed_rounded;
 
       if(op.isNew){
-        op.isNew=false;
         arrow=Icons.fiber_new;
-      }
-
-      if(!available){
-        arrow=Icons.do_disturb;
+        if (type==1)
+          op.isNew=false;
       }
     }
 

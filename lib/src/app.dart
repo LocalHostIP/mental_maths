@@ -7,7 +7,6 @@ import 'package:mental_maths/src/screens/config_levels.dart';
 import 'package:mental_maths/src/screens/start_train_page.dart';
 import 'package:mental_maths/src/screens/train_page.dart';
 import 'package:mental_maths/src/screens/train_results_page.dart';
-
 import 'math_op/operation.dart';
 
 class MyApp extends StatelessWidget {//ignore: must_be_immutable

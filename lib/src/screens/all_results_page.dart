@@ -124,15 +124,12 @@ class _AllResultsPageState extends State<AllResultsPage> {
       color: Colors.black54,
     );
 
-    if (o.isV2) {
-      v2 = Text(o.promV2.toString() + 's');
-    }
-    if (o.isV3) {
-      v3 = Text(o.promV3.toString() + 's');
-    }
+    v2 = Text(o.promV2.toString() + 's');
 
-    Container pTotal = Container(
-        child: Row(
+    v3 = Text(o.promV3.toString() + 's');
+
+
+    Container pTotal = Container(child: Row(
       children: [
         Text(o.promTotal.toString() + 's  '),
         Text(
@@ -145,7 +142,9 @@ class _AllResultsPageState extends State<AllResultsPage> {
     //Text(o.promV2.toString()+'s')
     return DataRow(
       cells: <DataCell>[
-        DataCell(Text('lvl ' + o.level.toString())),
+        DataCell(
+            Text('lvl ' + o.level.toString())
+        ),
         DataCell(v2),
         DataCell(v3),
         DataCell(pTotal),
@@ -156,8 +155,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
           ),
           onTap: () {
             setState(() {
-              results.deleteLevel(type, o.level);
-              saveResults();
+              _showDeleteDialog(type,o.level);
             });
           },
         )
@@ -165,7 +163,40 @@ class _AllResultsPageState extends State<AllResultsPage> {
     );
   }
 
-  saveResults() {
+  Future<void> _showDeleteDialog(String type, int level) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete level $level'),
+          content: SingleChildScrollView(
+            child: Text('Are you sure?')
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Confirm'),
+              onPressed: () {
+                setState(() {
+                  results.deleteLevel(type, level);
+                  saveResults();
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void saveResults() {
     widget.savings.writeResults(widget.savings.results);
   }
 }

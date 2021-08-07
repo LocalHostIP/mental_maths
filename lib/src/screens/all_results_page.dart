@@ -24,6 +24,7 @@ class AllResultsPage extends StatefulWidget {
 class _AllResultsPageState extends State<AllResultsPage> {
   late Results results;
   late ResultsChart resultChart;
+
   @override
   Widget build(BuildContext context) {
     results = widget.results;
@@ -47,15 +48,6 @@ class _AllResultsPageState extends State<AllResultsPage> {
           ),
           body: TabBarView(
             children: [
-              //Card(
-              /*child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        //child: _getTable(MathProblems.OPSum
-                        child: resultChart.getPieChart()
-                        )),
-              */
               Center(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
@@ -210,8 +202,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
   List<Widget> getGraphsCards(String type) {
     List<Widget> list = [];
     List<OpRegister> listResult = results.addition;
-    if(type==MathProblems.OPSub)
-      listResult=results.subtraction;
+    if (type == MathProblems.OPSub) listResult = results.subtraction;
     for (OpRegister o in listResult) {
       if (o.nTotal != 0)
         list.add(Container(
@@ -226,56 +217,58 @@ class _AllResultsPageState extends State<AllResultsPage> {
                   children: [
                     Container(
                       child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                'Total: ' + o.nTotal.toString(),
-                                style: const TextStyle(
-                                    fontSize: 14, color: Colors.black54),
-                              ),
-                              Text(
-                                'Level ' + o.level.toString(),
-                                style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black87),
-                              ),
-                              GestureDetector(
-                                child: Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                                onTap: () {
-                                  _showDeleteDialog(type, o.level);
-                                },
-                              )
-                            ],
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Total: ' + o.nTotal.toString(),
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.black54),
                           ),
+                          Text(
+                            'Level ' + o.level.toString(),
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87),
+                          ),
+                          GestureDetector(
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                            onTap: () {
+                              _showDeleteDialog(type, o.level);
+                            },
+                          )
+                        ],
                       ),
+                    ),
                     SizedBox(height: 1),
                     resultChart.getBarChart(type, o.level),
-                    Container(child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Record: ' + o.recordV2.toString(),
-                          style: const TextStyle(
-                              fontSize: 13, color: Colors.black54),
-                        ),
-                        Text(
-                          'Record: ' + o.recordV3.toString(),
-                          style: const TextStyle(
-                              fontSize: 13, color: Colors.black54),
-                        ),
-                        Text(
-                          '              ',
-                          style: const TextStyle(
-                              fontSize: 13, color: Colors.black54),
-                        ),
-                      ],
-                    ),)
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Record: ' + o.recordV2.toString(),
+                            style: const TextStyle(
+                                fontSize: 13, color: Colors.black54),
+                          ),
+                          Text(
+                            'Record: ' + o.recordV3.toString(),
+                            style: const TextStyle(
+                                fontSize: 13, color: Colors.black54),
+                          ),
+                          Text(
+                            '              ',
+                            style: const TextStyle(
+                                fontSize: 13, color: Colors.black54),
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),

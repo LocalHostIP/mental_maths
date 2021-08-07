@@ -1,20 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:mental_maths/src/math_op/results.dart';
 import 'package:path_provider/path_provider.dart';
 
-class Savings{
+class Savings {
   Results results = new Results();
 
-  Future<void> printContent() async{
+  Future<void> printContent() async {
     var content = await readResults();
     print(content);
   }
 
-  Future<void> iniResults() async{
+  Future<void> iniResults() async {
     //var path = await _localPath;
     //print(path);
-    results=await readResults();
+    results = await readResults();
     await validateFile();
     print(results.addition[1].recordV2);
     print(results.addition[1].recordV3);
@@ -41,7 +42,7 @@ class Savings{
   Future<Results> readResults() async {
     try {
       final file = await _localFile;
-      if (!file.existsSync()){
+      if (!file.existsSync()) {
         print('Creating file');
         await writeResults();
       }
@@ -57,9 +58,10 @@ class Savings{
     }
   }
 
-  Future<void> validateFile() async{
-    if (results.updateFile==null || results.updateFile<Results.updateFileCode){
-      results=new Results();
+  Future<void> validateFile() async {
+    if (results.updateFile == null ||
+        results.updateFile < Results.updateFileCode) {
+      results = new Results();
       await writeResults();
       print('Recreating results');
     }

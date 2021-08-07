@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mental_maths/src/config.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
 
-class ConfigLevelsPage extends StatefulWidget {
+class ConfigLevelsPage extends StatefulWidget { //ignore: must_be_immutable
   ConfigLevelsPage({Key? key, required this.tsettigns}) : super(key: key);
   TrainingSettings tsettigns;
   @override

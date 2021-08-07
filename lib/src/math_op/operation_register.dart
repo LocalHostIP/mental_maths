@@ -1,10 +1,9 @@
 import 'package:mental_maths/src/math_op/results.dart';
-
 import 'operation.dart';
 
 class OpRegister{
   String name = '';
-  int level;
+  int level=0;
   int nTotal = 0;
   double sum = 0;
   double promTotal = 0;
@@ -14,8 +13,10 @@ class OpRegister{
   double lastPromV2=0;
   double promV3=0;
   double lastPromV3=0;
-
   bool isNew=true;
+
+  double recordV2=0;
+  double recordV3=0;
 
   OpRegister({required this.name,required this.level});
 
@@ -31,7 +32,9 @@ class OpRegister{
         lastPromV2 = json['lastPromV2'],
         promV3 = json['promV3'],
         lastPromV3 = json['lastPromV3'],
-        isNew = json['isNew'];
+        isNew = json['isNew'],
+        recordV2=json['recordV2'],
+        recordV3=json['recordV3'];
 
   static List<OpRegister> readListFromJson(List<dynamic> opJson){
     List<OpRegister> op = [];
@@ -55,6 +58,8 @@ class OpRegister{
     'promV3':promV3,
     'lastPromV3':lastPromV3,
     'isNew':isNew,
+    'recordV2':recordV2,
+    'recordV3':recordV3,
   };
 
   void updateLastProm(){
@@ -80,6 +85,19 @@ class OpRegister{
       promV3=promTotal;
   }
 
+  void updateRecords(){
+    //if (promTotal<recordTotal || recordTotal==0){
+    //  recordTotal=promTotal;
+    //}
+
+    if (promV2<recordV2 || recordV2==0 || nTotal<=Results.nv2){
+      recordV2=promV2;
+    }
+    if (promV3<recordV3 || recordV3==0 || nTotal<=Results.nv3){
+      recordV3=promV3;
+    }
+  }
+
   void addOperation(Operation op){
     nTotal+=1;
     sum+=op.time;
@@ -88,6 +106,7 @@ class OpRegister{
       history.removeAt(0);
     }
     updateProm();
+    updateRecords();
   }
 
   void restart(){
@@ -100,6 +119,8 @@ class OpRegister{
     lastPromV2=0;
     promV3=0;
     lastPromV3=0;
+    recordV3=0;
+    recordV2=0;
 
     isNew=true;
   }

@@ -4,6 +4,9 @@ import 'operation.dart';
 import 'operation_register.dart';
 
 class Results{
+  static double updateFileCode=0.0001;
+  double updateFile=Results.updateFileCode;
+
   List<OpRegister> addition  = [];
   List<OpRegister> subtraction  = []; //All levels of substraction, each position of the list is a corresponding level
   List<List<int>> updated = []; //Contains the newly updated levels
@@ -11,12 +14,14 @@ class Results{
 
   Results.fromJson(Map<String,dynamic> json):
     addition = OpRegister.readListFromJson(json['addition']),
-    subtraction = OpRegister.readListFromJson(json['subtraction']);
+    subtraction = OpRegister.readListFromJson(json['subtraction']),
+    updateFile=json['updateFile'];
 
   Map <String,dynamic> toJson() =>
     {
       'addition':addition,
       'subtraction':subtraction,
+      'updateFile':updateFile
     };
 
   Results(){
@@ -33,7 +38,6 @@ class Results{
   void updateRegister(List<Operation> operations){
     //Restart update
     updated=[[],[]];
-
     //Update last prom
     for (int i = 0;i<maxLevel;i++){
       addition[i].updateLastProm();

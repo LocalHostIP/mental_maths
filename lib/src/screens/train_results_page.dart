@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mental_maths/src/math_op/operation_register.dart';
-import 'package:mental_maths/src/widgets/Drawer.dart';
+import 'package:mental_maths/src/widgets/drawer.dart';
 import 'package:mental_maths/src/math_op/results.dart';
 
 class TrainResultsPage extends StatelessWidget {//ignore: must_be_immutable
@@ -81,28 +81,44 @@ class TrainResultsPage extends StatelessWidget {//ignore: must_be_immutable
 
     double  df = op.getDifference();
     double pm = op.promTotal;
-    String subtitle = 'lvl '+ op.level.toString() +' (total: '+op.nTotal.toString()+')';
+    String lvlText = 'lvl '+ op.level.toString() +' ('+op.nTotal.toString()+')';
+    String recordText = '';
+    double record=-1;
+    TextStyle recordStyle = TextStyle(fontSize: 12);
+    int n = op.nTotal-10;
 
     switch(type){
       case 2:
         df=op.getDifferenceV2();
         pm=op.promV2;
-        subtitle = 'lvl '+ op.level.toString();
+        lvlText = 'lvl '+ op.level.toString();
+        record=op.recordV2;
+        n=Results.nv2;
         break;
       case 3:
         df=op.getDifferenceV3();
         pm=op.promV3;
-        subtitle = 'lvl '+ op.level.toString();
+        lvlText = 'lvl '+ op.level.toString();
+        record=op.recordV3;
+        n=Results.nv3;
         break;
     }
-
+    if (record==-1)
+      recordText='   ';
+    else
+      recordText='Record: $record';
     if (df<0){
       sign='';
       c=Colors.green;
       arrow=Icons.arrow_downward;
+      if (pm==record && n<op.nTotal){
+        recordText='New record: $record';
+        recordStyle = TextStyle(fontSize: 12,color: Colors.green);
+        arrow=Icons.tag_faces;
+      }
     }
 
-    change=sign+df.toString()+'s';
+    change=sign+df.toString();
     if(df==pm){
       change='';
       c=Colors.black54;
@@ -118,9 +134,23 @@ class TrainResultsPage extends StatelessWidget {//ignore: must_be_immutable
     return ListTile(
       title: Text(operationName),
       leading: Icon(arrow,color: c,),
-      subtitle: Text(subtitle),
+
+      subtitle: Container(child:Row( mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(lvlText),
+          SizedBox(width: 10,),
+          Text(recordText,style: recordStyle)]
+      )),
+
       enabled: true,
-      trailing: Text(change+'          '+pm.toString(),style: TextStyle(color: c),),
+      trailing: SizedBox( width: 100,
+        child: Row(
+        children: [
+          Text(change,style: TextStyle(color: c,fontSize: 13)),
+          SizedBox(width: 15,),
+          Text(pm.toString()+'s',style: TextStyle(color: c,fontWeight: FontWeight.bold))
+        ],
+      ),),
     );
   }
   void _showStartTrainingPage(BuildContext context){

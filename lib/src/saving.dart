@@ -15,6 +15,10 @@ class Savings{
     //var path = await _localPath;
     //print(path);
     results=await readResults();
+    await validateFile();
+    print(results.addition[1].recordV2);
+    print(results.addition[1].recordV3);
+    print(results.addition[1].lastPromV2);
   }
 
   Future<String> get _localPath async {
@@ -28,7 +32,7 @@ class Savings{
     return File('$path/results.json');
   }
 
-  Future<File> writeResults(Results results) async {
+  Future<File> writeResults() async {
     final file = await _localFile;
     // Write the file
     return file.writeAsString(json.encode(results.toJson()));
@@ -39,7 +43,7 @@ class Savings{
       final file = await _localFile;
       if (!file.existsSync()){
         print('Creating file');
-        await writeResults(results);
+        await writeResults();
       }
       // Read the file
       final contents = await file.readAsString();
@@ -47,9 +51,17 @@ class Savings{
     } catch (e) {
       print(e.toString());
       final file = await _localFile;
-      await writeResults(results);
+      await writeResults();
       final contents = await file.readAsString();
       return Results.fromJson(jsonDecode(contents));
+    }
+  }
+
+  Future<void> validateFile() async{
+    if (results.updateFile==null || results.updateFile<Results.updateFileCode){
+      results=new Results();
+      await writeResults();
+      print('Recreating results');
     }
   }
 }

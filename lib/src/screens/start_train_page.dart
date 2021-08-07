@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mental_maths/src/widgets/Drawer.dart';
+import 'package:mental_maths/src/widgets/drawer.dart';
 import 'package:mental_maths/src/config.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
 

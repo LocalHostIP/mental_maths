@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -164,7 +165,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     // TODO: implement initState
     
     //Create animation for showing numbers
-    _cAnimationOperationText = new AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _cAnimationOperationText = new AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _cAnimationOperationText.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _cAnimationOperationText.reverse();
@@ -220,6 +221,9 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
 
   void showOperation(){
     /// Starts animation for showing the numbers of the problem ///
+    /// print('level:');
+    print(mathProblem.getLevel());
+    _cAnimationOperationText.duration=Duration(milliseconds:100+mathProblem.getLevel()*200);
     _cAnimationOperationText.forward(from:0);
   }
   
@@ -263,7 +267,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
         });
         showOperation();
 
-        Future.delayed(Duration(milliseconds: 300+120*mathProblem.getLevel()),(){
+        Future.delayed(Duration(milliseconds: 300+100*mathProblem.getLevel()),(){
           setState(() {
             this._controllerField.text='';
             _colorInput=Colors.black54;
@@ -293,7 +297,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     //update results
     widget.results.updateRegister(mathProblem.operations);
     //save results
-    widget.savings.writeResults(widget.savings.results);
+    widget.savings.writeResults();
     //Open results page
     Navigator.of(context).pushNamed('/resultsPage');
   }

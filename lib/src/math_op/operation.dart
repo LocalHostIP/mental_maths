@@ -1,6 +1,7 @@
 import 'math_problems.dart';
 
-class Operation {
+class Problem {
+  ///Math problem (operation)
   String operator = MathProblems.OPSum;
   num n1 = 0;
   num n2 = 0;
@@ -12,15 +13,11 @@ class Operation {
   //ToJson -- For saving on files
   Map<String, dynamic> toJson() => {
         'operator': operator,
-        'n1': n1,
-        'n2': n2,
         'level': level,
         'time': time,
-        'sol': sol,
-        'time_penalization': timePenalization,
       };
 
-  Operation(
+  Problem(
       {required this.operator,
       required this.n1,
       required this.n2,
@@ -33,24 +30,21 @@ class Operation {
       throw (this.operator + ' is not a valid operator');
   }
 
-  static List<Operation> readListFromJson(List<dynamic> opJson) {
-    List<Operation> op = [];
+  static List<Problem> readListFromJson(List<dynamic> opJson) {
+    List<Problem> op = [];
     for (Map<String, dynamic> o in opJson) {
-      op.add(Operation.fromJson(o));
+      op.add(Problem.fromJson(o));
     }
     return op;
   }
 
-  Operation.fromJson(Map<String, dynamic> json)
-      : n1 = json['n1'],
+  Problem.fromJson(Map<String, dynamic> json)
+      :
         level = json['level'],
-        n2 = json['n2'],
-        sol = json['sol'],
         time = json['time'],
-        timePenalization = json['timePenalization'],
         operator = json['operator'];
 
-  Operation.result(
+  Problem.result(
       {required this.operator, required this.time, required this.level});
 
   void setTime(int t) {

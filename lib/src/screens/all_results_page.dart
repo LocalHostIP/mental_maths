@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
 import 'package:mental_maths/src/math_op/operation_register.dart';
-import 'package:mental_maths/src/math_op/results.dart';
+import 'package:mental_maths/src/math_op/save.dart';
 import 'package:mental_maths/src/widgets/drawer.dart';
 import 'package:mental_maths/src/widgets/results_chart.dart';
 
-import '../saving.dart';
+import '../math_op/saving.dart';
 
+//ignore: must_be_immutable
 class AllResultsPage extends StatefulWidget {
-  //ignore: must_be_immutable
-  //ignore: must_be_immutable
-  late Results results;
+  
+  late Save _results;
   Savings savings;
 
   AllResultsPage({Key? key, required this.savings}) : super(key: key) {
-    results = savings.results;
+    _results = savings.results;
   }
 
   @override
@@ -22,12 +22,12 @@ class AllResultsPage extends StatefulWidget {
 }
 
 class _AllResultsPageState extends State<AllResultsPage> {
-  late Results results;
+  late Save results;
   late ResultsChart resultChart;
 
   @override
   Widget build(BuildContext context) {
-    results = widget.results;
+    results = widget._results;
     resultChart = new ResultsChart(results);
     return MaterialApp(
       home: DefaultTabController(
@@ -51,14 +51,14 @@ class _AllResultsPageState extends State<AllResultsPage> {
               Center(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
-                  child: Column(children: getGraphsCards(MathProblems.OPSum)),
+                  child: Column(children: _getGraphsCards(MathProblems.OPSum)),
                 ),
               ),
               //),
               Center(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
-                  child: Column(children: getGraphsCards(MathProblems.OPSub)),
+                  child: Column(children: _getGraphsCards(MathProblems.OPSub)),
                 ),
               ),
             ],
@@ -69,6 +69,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
   }
 
   Widget _getTable(String type) {
+    //Will be deleted
     return DataTable(
       columns: <DataColumn>[
         DataColumn(
@@ -79,13 +80,13 @@ class _AllResultsPageState extends State<AllResultsPage> {
         ),
         DataColumn(
           label: Text(
-            'Last ' + Results.nv2.toString(),
+            'Last ' + Save.nv2.toString(),
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
         ),
         DataColumn(
           label: Text(
-            'Last ' + Results.nv3.toString(),
+            'Last ' + Save.nv3.toString(),
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
         ),
@@ -112,7 +113,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
 
     List<DataRow> dts = [];
 
-    for (OpRegister o in listType) {
+    for (OperationRegister o in listType) {
       if (o.nTotal != 0) {
         dts.add(_getDataRow(o, type));
       }
@@ -121,7 +122,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
     return dts;
   }
 
-  DataRow _getDataRow(OpRegister o, String type) {
+  DataRow _getDataRow(OperationRegister o, String type) {
     Widget v2 = Icon(
       Icons.horizontal_rule,
       color: Colors.black54,
@@ -131,14 +132,14 @@ class _AllResultsPageState extends State<AllResultsPage> {
       color: Colors.black54,
     );
 
-    v2 = Text(o.promV2.toString() + 's');
+    v2 = Text(o.aveV2.toString() + 's');
 
-    v3 = Text(o.promV3.toString() + 's');
+    v3 = Text(o.aveV3.toString() + 's');
 
     Container pTotal = Container(
         child: Row(
       children: [
-        Text(o.promTotal.toString() + 's  '),
+        Text(o.aveTotal.toString() + 's  '),
         Text(
           '(' + o.nTotal.toString() + ')',
           style: TextStyle(color: Colors.black54, fontSize: 12),
@@ -199,11 +200,11 @@ class _AllResultsPageState extends State<AllResultsPage> {
     );
   }
 
-  List<Widget> getGraphsCards(String type) {
+  List<Widget> _getGraphsCards(String type) {
     List<Widget> list = [];
-    List<OpRegister> listResult = results.addition;
+    List<OperationRegister> listResult = results.addition;
     if (type == MathProblems.OPSub) listResult = results.subtraction;
-    for (OpRegister o in listResult) {
+    for (OperationRegister o in listResult) {
       if (o.nTotal != 0)
         list.add(Container(
             height: 230,
@@ -279,7 +280,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
   }
 
   void _saveResults() {
-    widget.savings.writeResults();
+    widget.savings.save();
   }
 
   @override

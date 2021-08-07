@@ -1,68 +1,65 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:mental_maths/src/math_op/results.dart';
+import 'package:mental_maths/src/math_op/save.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Savings {
-  Results results = new Results();
-
-  Future<void> printContent() async {
-    var content = await readResults();
-    print(content);
-  }
-
+  ///Controls results savings and file for saving
+  Save results = new Save();
+  
   Future<void> iniResults() async {
-    //var path = await _localPath;
-    //print(path);
-    results = await readResults();
+    ///Reads and validates results save
+    results = await readFile();
     await validateFile();
-    print(results.addition[1].recordV2);
-    print(results.addition[1].recordV3);
-    print(results.addition[1].lastPromV2);
   }
 
   Future<String> get _localPath async {
+    ///Returns default path for the saving file
     final directory = await getApplicationDocumentsDirectory();
     print(directory.path);
     return directory.path;
   }
 
   Future<File> get _localFile async {
+    ///Returns file for saving
     final path = await _localPath;
     return File('$path/results.json');
   }
 
-  Future<File> writeResults() async {
+  Future<File> save() async {
+    ///Save on file
     final file = await _localFile;
-    // Write the file
     return file.writeAsString(json.encode(results.toJson()));
   }
 
-  Future<Results> readResults() async {
+  Future<Save> readFile() async {
+    ///Read save file
     try {
       final file = await _localFile;
       if (!file.existsSync()) {
+        //If file don't exist create
         print('Creating file');
-        await writeResults();
+        await save();
       }
       // Read the file
       final contents = await file.readAsString();
-      return Results.fromJson(jsonDecode(contents));
+      return Save.fromJson(jsonDecode(contents));
     } catch (e) {
       print(e.toString());
-      final file = await _localFile;
-      await writeResults();
+      final file = await _localFile; //Create file if error
+      await save();
       final contents = await file.readAsString();
-      return Results.fromJson(jsonDecode(contents));
+      return Save.fromJson(jsonDecode(contents));
     }
   }
 
   Future<void> validateFile() async {
+    ///Validates save from file
     if (results.updateFile == null ||
-        results.updateFile < Results.updateFileCode) {
-      results = new Results();
-      await writeResults();
+        results.updateFile < Save.updateFileCode) {
+      results = new Save();
+      await save();
       print('Recreating results');
     }
   }

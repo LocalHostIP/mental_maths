@@ -4,8 +4,8 @@ import 'package:mental_maths/src/config.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
 import 'package:mental_maths/src/widgets/drawer.dart';
 
+//ignore: must_be_immutable
 class StartTrainPage extends StatefulWidget {
-  //ignore: must_be_immutable
   StartTrainPage({Key? key, required this.tSettings}) : super(key: key);
   TrainingSettings tSettings = new TrainingSettings();
 
@@ -14,9 +14,9 @@ class StartTrainPage extends StatefulWidget {
 }
 
 class _StartTrainPageState extends State<StartTrainPage> {
-  String lvlSum = '3';
-  String lvlSub = '2';
-  double limit = 10;
+  String _lvlSum = '3';
+  String _lvlSub = '2';
+  double _limit = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class _StartTrainPageState extends State<StartTrainPage> {
                         children: [
                           Text('Addition'),
                           Text(
-                            'lvl (' + lvlSum + ')',
+                            'lvl (' + _lvlSum + ')',
                             style: const TextStyle(
                                 color: Colors.black54, fontSize: 15),
                           )
@@ -90,7 +90,7 @@ class _StartTrainPageState extends State<StartTrainPage> {
                         children: [
                           Text('Subtraction'),
                           Text(
-                            'lvl (' + lvlSub + ')',
+                            'lvl (' + _lvlSub + ')',
                             style: const TextStyle(
                                 color: Colors.black54, fontSize: 15),
                           )
@@ -108,7 +108,7 @@ class _StartTrainPageState extends State<StartTrainPage> {
             ),
             Center(
               child: Text(
-                'Number of operations: ' + limit.round().toString(),
+                'Number of operations: ' + _limit.round().toString(),
                 style: TextStyle(fontSize: 16),
               ),
             ),
@@ -116,16 +116,16 @@ class _StartTrainPageState extends State<StartTrainPage> {
               height: 20,
             ),
             Slider(
-              value: limit,
+              value: _limit,
               onChanged: (ch) {
                 setState(() {
-                  limit = ch;
+                  _limit = ch;
                 });
-                widget.tSettings.limitOP = limit.round();
+                widget.tSettings.limitOP = _limit.round();
               },
               max: 30,
               min: 2,
-              label: limit.round().toString(),
+              label: _limit.round().toString(),
               divisions: 25,
             ),
           ],
@@ -145,18 +145,18 @@ class _StartTrainPageState extends State<StartTrainPage> {
   void initState() {
     // TODO: implement initState
     //Create lvl label on addition
-    lvlSum = '';
+    _lvlSum = '';
     for (int i in widget.tSettings.getLevels(MathProblems.OPSum)) {
-      lvlSum = lvlSum + i.toString() + ',';
+      _lvlSum = _lvlSum + i.toString() + ',';
     }
-    lvlSum = lvlSum.substring(0, lvlSum.length - 1);
+    _lvlSum = _lvlSum.substring(0, _lvlSum.length - 1);
 
     //Create lvl label on subtraction
-    lvlSub = '';
+    _lvlSub = '';
     for (int i in widget.tSettings.getLevels(MathProblems.OPSub)) {
-      lvlSub = lvlSub + i.toString() + ',';
+      _lvlSub = _lvlSub + i.toString() + ',';
     }
-    lvlSub = lvlSub.substring(0, lvlSub.length - 1);
+    _lvlSub = _lvlSub.substring(0, _lvlSub.length - 1);
     super.initState();
   }
 }

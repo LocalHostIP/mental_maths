@@ -2,93 +2,64 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:mental_maths/src/math_op/math_problems.dart';
 import 'package:mental_maths/src/math_op/operation_register.dart';
-import 'package:mental_maths/src/math_op/results.dart';
+import 'package:mental_maths/src/math_op/save.dart';
 
 class ResultsChart {
-  Results results;
-  late List<charts.Series<ResultDataSeries, String>> _seriesPieData;
+  Save _results;
   late List<charts.Series<ResultDataSeries, String>> _seriesBarData;
 
-  ResultsChart(this.results);
+  ResultsChart(this._results);
 
-  void _generatePieData() {
-    /*
-    _seriesPieData = [];
-    var data = [
-      new ResultDataSeries(
-          type: 'Work',
-          average: 30,
-          barColor: charts.ColorUtil.fromDartColor(Colors.blue)),
-      new ResultDataSeries(
-          type: 'Work 2',
-          average: 50,
-          barColor: charts.ColorUtil.fromDartColor(Colors.red)),
-      new ResultDataSeries(
-          type: 'Work 3',
-          average: 20,
-          barColor: charts.ColorUtil.fromDartColor(Colors.green)),
-    ];
-    _seriesPieData.add(charts.Series(
-      id: 'Results Pie',
-      data: data,
-      domainFn: (_seriesData, _) => _seriesData.type,
-      measureFn: (_seriesData, _) => _seriesData.average,
-      colorFn: (_seriesData, _) => _seriesData.barColor,
-      labelAccessorFn: (_seriesData, index) => _seriesData.average.toString(),
-    ));
-    * */
-  }
-
-  void _generateBarData(String type, int level) {
+  void _generateCurrentLevelData(String type, int level) {
     _seriesBarData = [];
-    OpRegister result = results.addition[level];
+    OperationRegister result = _results.addition[level];
 
-    if (type == MathProblems.OPSub) result = results.subtraction[level];
+    if (type == MathProblems.OPSub) result = _results.subtraction[level];
     var data1 = [
       new ResultDataSeries(
-          type: 'Last ' + Results.nv2.toString(),
-          average: result.promV2,
+          type: 'Last ' + Save.nv2.toString(),
+          average: result.aveV2,
           record: result.recordV2,
           difference: result.getDifferenceV2()),
       new ResultDataSeries(
-          type: 'Last ' + Results.nv3.toString(),
-          average: result.promV3,
+          type: 'Last ' + Save.nv3.toString(),
+          average: result.aveV3,
           record: result.recordV3,
           difference: result.getDifferenceV3()),
       new ResultDataSeries(
           type: 'Total',
-          average: result.promTotal,
+          average: result.aveTotal,
           record: 0,
           difference: result.getDifference()),
     ];
     var data2 = [
       new ResultDataSeries(
-        type: 'Last ' + Results.nv2.toString(),
+        type: 'Last ' + Save.nv2.toString(),
         difference: result.getDifferenceV2(),
-        average: result.promV2,
+        average: result.aveV2,
         isDifference: true,
       ),
       new ResultDataSeries(
-          type: 'Last ' + Results.nv3.toString(),
+          type: 'Last ' + Save.nv3.toString(),
           difference: result.getDifferenceV3(),
-          average: result.promV3,
+          average: result.aveV3,
           isDifference: true),
       new ResultDataSeries(
           type: 'Total',
           difference: result.getDifference(),
-          average: result.promTotal,
+          average: result.aveTotal,
           isDifference: true)
       ,
     ];
     var data3 = [
       new ResultDataSeries(
-          type: 'Last ' + Results.nv2.toString(),
-          average: result.promV2,
+          type: 'Last ' + Save.nv2.toString(),
+          average: result.aveV2,
           record: result.recordV2,
           difference: result.getDifferenceV2()),
       new ResultDataSeries(
-          type: 'Last ' + Results.nv3.toString(),
-          average: result.promV3,
+          type: 'Last ' + Save.nv3.toString(),
+          average: result.aveV3,
           record: result.recordV3,
           difference: result.getDifferenceV3()),
     ];
@@ -123,7 +94,7 @@ class ResultsChart {
   }
 
   Widget getBarChart(String type, int level) {
-    _generateBarData(type, level);
+    _generateCurrentLevelData(type, level);
     return Expanded(
         child: charts.BarChart(
       _seriesBarData,
@@ -152,32 +123,6 @@ class ResultsChart {
         ),
       ],
     ));
-  }
-
-  Widget getPieChart() {
-    return charts.PieChart(
-      _seriesPieData,
-      animate: true,
-      animationDuration: Duration(seconds: 1),
-      behaviors: [
-        new charts.DatumLegend(
-          outsideJustification: charts.OutsideJustification.endDrawArea,
-          horizontalFirst: false,
-          desiredMaxRows: 2,
-          cellPadding: new EdgeInsets.only(right: 4, bottom: 4),
-          entryTextStyle: charts.TextStyleSpec(
-              color: charts.MaterialPalette.white,
-              fontFamily: 'Georgia',
-              fontSize: 11),
-        )
-      ],
-      defaultRenderer: new charts.ArcRendererConfig(
-          arcWidth: 100,
-          arcRendererDecorators: [
-            new charts.ArcLabelDecorator(
-                labelPosition: charts.ArcLabelPosition.inside)
-          ]),
-    );
   }
 }
 

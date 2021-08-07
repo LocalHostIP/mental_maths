@@ -5,28 +5,31 @@ import 'operation.dart';
 class MathProblems {
   /// Class for generating and controlling math problems ///
   Random random = new Random();
-  final List<String> operators; //Possible operators
+  final List<String> operators; //Possible operators 
   final int limit; //Amount of operations
   late List<int> lvlSum; //Level of operations
   late List<int> lvlSub;
   int currentIndex = -1; //Current index problem
   Stopwatch _stopwatch = Stopwatch();
 
-  List<Operation> operations = []; //Al problems (operations)
+  List<Problem> operations = []; //Al problems (operations)
 
   MathProblems(this.limit, this.operators, List<List<int>> lvls) {
+    ///Generates problems for all operators given
+    //Ini lvls arrays
     for (int i = 0; i < operators.length; i++) {
       if (operators[i] == MathProblems.OPSum)
         lvlSum = lvls[i];
-      else if (operators[i] == MathProblems.OPSub) lvlSub = lvls[i];
+      else if (operators[i] == MathProblems.OPSub) 
+        lvlSub = lvls[i];
     }
-    generateProblems();
+    _generateProblems();
   }
 
-  void generateProblems() {
-    finished = false;
-
+  void _generateProblems() {
     /// Creates all problems according to levels///
+    finished = false;
+    
     String op;
     int level;
     var nLength;
@@ -45,7 +48,7 @@ class MathProblems {
       else if (op == MathProblems.OPSub)
         level = lvlSub[random.nextInt(lvlSub.length)]; //get a random level
 
-      nLength = this.getLengthNumbers(level); // get Lenght of numbers
+      nLength = this._getLengthNumbers(level); // get Lenght of numbers
       inf1 = pow(10, nLength[0] - 1).floor();
       inf2 = pow(10, nLength[1] - 1).floor();
       n1 = inf1 + random.nextInt(inf1 * 10 - inf1); // Get random numbers
@@ -58,8 +61,8 @@ class MathProblems {
         n1 = aux;
       }
 
-      Operation operation =
-          Operation(operator: op, n1: n1, n2: n2, level: level);
+      Problem operation =
+          Problem(operator: op, n1: n1, n2: n2, level: level);
       operations.add(operation);
     }
   }
@@ -86,13 +89,13 @@ class MathProblems {
 
   bool finished = false;
 
-  void startClock() {
+  void _startClock() {
     /// Starts the timer for the current problem///
     _stopwatch.reset();
     _stopwatch.start();
   }
 
-  void stopClock() {
+  void _stopClock() {
     /// Starts the timer for the current problem///
     _stopwatch.stop();
     operations[currentIndex].time = _stopwatch.elapsed.inMilliseconds;
@@ -101,14 +104,14 @@ class MathProblems {
   void nextProblem() {
     /// Changes to next problem the current index, even when is the first problem is necessary to call this method///
     if (currentIndex != -1) {
-      stopClock();
+      _stopClock();
       operations[currentIndex].setTime(_stopwatch.elapsed.inMilliseconds);
       //print(operations[currentIndex].time/1000);
     }
 
     if (this.currentIndex < this.limit - 1) {
       this.currentIndex++;
-      startClock();
+      _startClock();
     } else {
       finished = true;
     }
@@ -126,7 +129,8 @@ class MathProblems {
     return operations[currentIndex].sol == res;
   }
 
-  List<int> getLengthNumbers(int level) {
+  List<int> _getLengthNumbers(int level) {
+    ///Get a number depending on the level
     var out = [-1, -1];
     int half = ((level + 1) / 2).ceil();
     int mod = (level + 1) % 2;

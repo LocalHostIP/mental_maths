@@ -1,23 +1,23 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
-import 'package:mental_maths/src/saving.dart';
+import 'package:mental_maths/src/math_op/saving.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
 import '../config.dart';
-import '../math_op/results.dart';
+import '../math_op/save.dart';
 
-class TrainPage extends StatefulWidget {//ignore: must_be_immutable
-  TrainingSettings tSettings; //General settings, including Type of problmes
+//ignore: must_be_immutable
+class TrainPage extends StatefulWidget {
+  TrainingSettings tSettings; //General settings, including Type of problems
   Savings savings;
-  late Results results; //Register of results
+  late Save _results; //Register of results
 
   TrainPage({Key? key, required this.tSettings,required this.savings}) : super(key: key){
-    results = savings.results;
+    _results = savings.results;
   }
 
   @override
@@ -31,12 +31,12 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
   late final Animation<double> _opacityOperationText;
   late final AnimationController _cAnimationTimePenalText;
   late final Animation<double> _opacityTimePenalText;
-  String timeInfo='+2s';
+  String _timeInfo='+2s';
   
-  late MathProblems mathProblem;
+  late MathProblems _mathProblem;
   Color _colorInput = Colors.black54;
 
-  TextStyle timeTextStyle = TextStyle(color: Colors.red);
+  TextStyle _timeTextStyle = TextStyle(color: Colors.red);
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +49,13 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
           builder: (context,constrains) {
             var parentHeight = constrains.maxHeight;
             var parentWidth = constrains.maxWidth;
-            return getTrainerWidget(parentWidth,parentHeight);
+            return _getTrainerWidget(parentWidth,parentHeight);
         })
       ),
     );
   }
 
-  Widget getTrainerWidget(width,height){
+  Widget _getTrainerWidget(width,height){
     /// Widget for training ///
     TextStyle _inputStyle = TextStyle(fontSize: height*0.055,color: _colorInput);
     return Column(
@@ -67,10 +67,10 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(child: Text((mathProblem.currentIndex+1).toString()+'/'+mathProblem.limit.toString(),
+          Expanded(child: Text((_mathProblem.currentIndex+1).toString()+'/'+_mathProblem.limit.toString(),
               style: TextStyle(color: Colors.black45,fontWeight: FontWeight.bold),textAlign: TextAlign.center)),
           FadeTransition(opacity: _opacityTimePenalText,
-          child: Text(timeInfo,style: timeTextStyle))
+          child: Text(_timeInfo,style: _timeTextStyle))
         ],
       ),),
       //Operation card
@@ -81,11 +81,11 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              getOperationWidget(width,height),
+              _getOperationWidget(width,height),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(onPressed: (){showOperation();showTimePenal(3+mathProblem.getLevel());}, child: Text('View')),
+                  TextButton(onPressed: (){_showOperation();_showTimePenal(3+_mathProblem.getLevel());}, child: Text('View')),
                 ],
               )
             ],
@@ -120,7 +120,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
               contentPadding:
                 EdgeInsets.only(left: 15, bottom: 0, top: 11, right: 15),
             ),
-            onSubmitted: (ch)=>inputChanged(ch,submitted: true),
+            onSubmitted: (ch)=>_inputChanged(ch,submitted: true),
           ),
 
         ),
@@ -136,14 +136,14 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
           fontSize: 20,
           defaultLayouts: [VirtualKeyboardDefaultLayouts.English],
           type: VirtualKeyboardType.Numeric,
-          onKeyPress: (key)=>keyPressed(key),
+          onKeyPress: (key)=>_keyPressed(key),
         ),
       )
     ],
     );
   }
 
-  Widget getOperationWidget(width,height){
+  Widget _getOperationWidget(width,height){
     /// Widget of current math problem ///
     TextStyle numberStyle = TextStyle(fontSize: height*0.055,color: Colors.black87);
     return Expanded(child:FadeTransition(opacity: _opacityOperationText,
@@ -152,11 +152,11 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(mathProblem.getNumber1().toString(),style: numberStyle),
-              Text(mathProblem.getNumber2().toString(),style: numberStyle),
+              Text(_mathProblem.getNumber1().toString(),style: numberStyle),
+              Text(_mathProblem.getNumber2().toString(),style: numberStyle),
             ],
           ),
-          Text(mathProblem.getOperation(),style: numberStyle)
+          Text(_mathProblem.getOperation(),style: numberStyle)
         ])),);
   }
 
@@ -188,12 +188,12 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     var ops=widget.tSettings.getActiveOperators();
     for (String op in ops)
       lvls.add(widget.tSettings.getLevels(op));
-    mathProblem = MathProblems(widget.tSettings.limitOP,ops,lvls);
+    _mathProblem = MathProblems(widget.tSettings.limitOP,ops,lvls);
 
     //Start first problem timer
-    mathProblem.nextProblem();
+    _mathProblem.nextProblem();
 
-    showOperation();
+    _showOperation();
 
     super.initState();
   }
@@ -209,42 +209,42 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     super.dispose();
   }
 
-  void keyPressed(key){
+  void _keyPressed(key){
     /// When the virtual keyboard is pressed change text of input///
     if (key.keyType==VirtualKeyboardKeyType.String){
       this._controllerField.text=_controllerField.text+key.text;
     }else if(key.action == VirtualKeyboardKeyAction.Backspace){
       this._controllerField.text= _controllerField.text.substring(0,_controllerField.text.length-1);
     }
-    inputChanged(_controllerField.text);
+    _inputChanged(_controllerField.text);
   }
 
-  void showOperation(){
+  void _showOperation(){
     /// Starts animation for showing the numbers of the problem ///
     /// print('level:');
-    print(mathProblem.getLevel());
-    _cAnimationOperationText.duration=Duration(milliseconds:100+mathProblem.getLevel()*200);
+    print(_mathProblem.getLevel());
+    _cAnimationOperationText.duration=Duration(milliseconds:100+_mathProblem.getLevel()*200);
     _cAnimationOperationText.forward(from:0);
   }
   
-  void showTimePenal(int seconds){
+  void _showTimePenal(int seconds){
     setState(() {
-      timeTextStyle = TextStyle(color: Colors.red);
-      timeInfo='+'+seconds.toString()+'s';
+      _timeTextStyle = TextStyle(color: Colors.red);
+      _timeInfo='+'+seconds.toString()+'s';
     });
     _cAnimationTimePenalText.forward(from: 0);
-    mathProblem.increaseTimePenalization(seconds*1000);
+    _mathProblem.increaseTimePenalization(seconds*1000);
   }
 
-  void showTimeOperation(){
+  void _showTimeOperation(){
     setState(() {
-      timeTextStyle = TextStyle(color: Colors.black54);
-      timeInfo=mathProblem.getLastTime().toString();
+      _timeTextStyle = TextStyle(color: Colors.black54);
+      _timeInfo=_mathProblem.getLastTime().toString();
     });
     _cAnimationTimePenalText.forward(from: 0);
   }
 
-  void inputChanged(String ch,{bool submitted=false}){
+  void _inputChanged(String ch,{bool submitted=false}){
     /// checks if input has the answer when it changes///
     //When entered is pressed input looses focus, this returns focus to input
     _controllerField.text=ch;
@@ -253,21 +253,21 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
 
     //check if is correct answer1
 
-    if(mathProblem.checkAnswer(num.parse(ch))){
+    if(_mathProblem.checkAnswer(num.parse(ch))){
         setState(() {
-          mathProblem.nextProblem();
+          _mathProblem.nextProblem();
           _colorInput=Colors.green;
-          showTimeOperation();
-          if(mathProblem.finished)
+          _showTimeOperation();
+          if(_mathProblem.finished)
             _showResults(context);
           //print(mathProblem.limit);
           //print(mathProblem.currentIndex);
 
           //Detener temporizador de problema y actualizar al siguiente problema si aun se puede
         });
-        showOperation();
+        _showOperation();
 
-        Future.delayed(Duration(milliseconds: 300+100*mathProblem.getLevel()),(){
+        Future.delayed(Duration(milliseconds: 300+100*_mathProblem.getLevel()),(){
           setState(() {
             this._controllerField.text='';
             _colorInput=Colors.black54;
@@ -280,7 +280,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
           setState(() {
             _colorInput=Colors.red;
           });
-          Future.delayed(Duration(milliseconds: 300+120*mathProblem.getLevel()),(){
+          Future.delayed(Duration(milliseconds: 300+120*_mathProblem.getLevel()),(){
             setState(() {
               this._controllerField.text='';
               _colorInput=Colors.black54;
@@ -295,9 +295,9 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
 
   void _showResults(BuildContext context){
     //update results
-    widget.results.updateRegister(mathProblem.operations);
+    widget._results.updateSave(_mathProblem.operations);
     //save results
-    widget.savings.writeResults();
+    widget.savings.save();
     //Open results page
     Navigator.of(context).pushNamed('/resultsPage');
   }

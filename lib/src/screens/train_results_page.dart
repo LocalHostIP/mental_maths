@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mental_maths/src/math_op/operation_register.dart';
-import 'package:mental_maths/src/math_op/results.dart';
+import 'package:mental_maths/src/math_op/save.dart';
 import 'package:mental_maths/src/widgets/drawer.dart';
 
 class TrainResultsPage extends StatelessWidget {
@@ -8,7 +8,7 @@ class TrainResultsPage extends StatelessWidget {
 
   TrainResultsPage({Key? key, required this.results}) : super(key: key);
 
-  Results results;
+  Save results;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +20,8 @@ class TrainResultsPage extends StatelessWidget {
           appBar: AppBar(
             bottom: TabBar(
               tabs: [
-                Tab(text: 'Last ' + Results.nv2.toString()),
-                Tab(text: 'Last ' + Results.nv3.toString()),
+                Tab(text: 'Last ' + Save.nv2.toString()),
+                Tab(text: 'Last ' + Save.nv3.toString()),
                 Tab(
                   text: 'All',
                 )
@@ -61,7 +61,7 @@ class TrainResultsPage extends StatelessWidget {
 
   List<Widget> getTiles(int type) {
     List<Widget> r = [];
-    OpRegister op;
+    OperationRegister op;
     for (int i in results.updated[0]) {
       op = results.addition[i];
       r.add(getTile('Addition', op, type));
@@ -75,7 +75,7 @@ class TrainResultsPage extends StatelessWidget {
     return r;
   }
 
-  Widget getTile(String operationName, OpRegister op, int type) {
+  Widget getTile(String operationName, OperationRegister op, int type) {
     ///
     ///Returns the Promedio ListTile corresponding to the operation.dart, it needs a type of media
     ///type: 1=Total, 2=PromV2, 3=PromV3
@@ -86,7 +86,7 @@ class TrainResultsPage extends StatelessWidget {
     String change;
 
     double df = op.getDifference();
-    double pm = op.promTotal;
+    double pm = op.aveTotal;
     String lvlText =
         'lvl ' + op.level.toString() + ' (' + op.nTotal.toString() + ')';
     String recordText = '';
@@ -97,17 +97,17 @@ class TrainResultsPage extends StatelessWidget {
     switch (type) {
       case 2:
         df = op.getDifferenceV2();
-        pm = op.promV2;
+        pm = op.aveV2;
         lvlText = 'lvl ' + op.level.toString();
         record = op.recordV2;
-        n = Results.nv2;
+        n = Save.nv2;
         break;
       case 3:
         df = op.getDifferenceV3();
-        pm = op.promV3;
+        pm = op.aveV3;
         lvlText = 'lvl ' + op.level.toString();
         record = op.recordV3;
-        n = Results.nv3;
+        n = Save.nv3;
         break;
     }
     if (record == -1)

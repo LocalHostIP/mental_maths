@@ -84,6 +84,6 @@ class Save {
     }
   }
 
-  static int nv2 = 10;
-  static int nv3 = 50;
+  static int nLast1 = 10;
+  static int nLast2 = 50;
 }

@@ -17,12 +17,12 @@ class ResultsChart {
     if (type == MathProblems.OPSub) result = _results.subtraction[level];
     var data1 = [
       new ResultDataSeries(
-          type: 'Last ' + Save.nv2.toString(),
+          type: 'Last ' + Save.nLast1.toString(),
           average: result.aveV2,
           record: result.recordV2,
           difference: result.getDifferenceV2()),
       new ResultDataSeries(
-          type: 'Last ' + Save.nv3.toString(),
+          type: 'Last ' + Save.nLast2.toString(),
           average: result.aveV3,
           record: result.recordV3,
           difference: result.getDifferenceV3()),
@@ -34,13 +34,13 @@ class ResultsChart {
     ];
     var data2 = [
       new ResultDataSeries(
-        type: 'Last ' + Save.nv2.toString(),
+        type: 'Last ' + Save.nLast1.toString(),
         difference: result.getDifferenceV2(),
         average: result.aveV2,
         isDifference: true,
       ),
       new ResultDataSeries(
-          type: 'Last ' + Save.nv3.toString(),
+          type: 'Last ' + Save.nLast2.toString(),
           difference: result.getDifferenceV3(),
           average: result.aveV3,
           isDifference: true),
@@ -53,12 +53,12 @@ class ResultsChart {
     ];
     var data3 = [
       new ResultDataSeries(
-          type: 'Last ' + Save.nv2.toString(),
+          type: 'Last ' + Save.nLast1.toString(),
           average: result.aveV2,
           record: result.recordV2,
           difference: result.getDifferenceV2()),
       new ResultDataSeries(
-          type: 'Last ' + Save.nv3.toString(),
+          type: 'Last ' + Save.nLast2.toString(),
           average: result.aveV3,
           record: result.recordV3,
           difference: result.getDifferenceV3()),

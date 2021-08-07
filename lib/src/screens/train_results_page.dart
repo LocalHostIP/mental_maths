@@ -3,8 +3,8 @@ import 'package:mental_maths/src/math_op/operation_register.dart';
 import 'package:mental_maths/src/math_op/save.dart';
 import 'package:mental_maths/src/widgets/drawer.dart';
 
+//ignore: must_be_immutable
 class TrainResultsPage extends StatelessWidget {
-  //ignore: must_be_immutable
 
   TrainResultsPage({Key? key, required this.results}) : super(key: key);
 
@@ -20,8 +20,8 @@ class TrainResultsPage extends StatelessWidget {
           appBar: AppBar(
             bottom: TabBar(
               tabs: [
-                Tab(text: 'Last ' + Save.nv2.toString()),
-                Tab(text: 'Last ' + Save.nv3.toString()),
+                Tab(text: 'Last ' + Save.nLast1.toString()),
+                Tab(text: 'Last ' + Save.nLast2.toString()),
                 Tab(
                   text: 'All',
                 )
@@ -93,6 +93,7 @@ class TrainResultsPage extends StatelessWidget {
     double record = -1;
     TextStyle recordStyle = TextStyle(fontSize: 12);
     int n = op.nTotal - 10;
+    bool validRecord=false;
 
     switch (type) {
       case 2:
@@ -100,20 +101,23 @@ class TrainResultsPage extends StatelessWidget {
         pm = op.aveV2;
         lvlText = 'lvl ' + op.level.toString();
         record = op.recordV2;
-        n = Save.nv2;
+        n = Save.nLast1;
+        validRecord=op.isValidRecordV2;
         break;
       case 3:
         df = op.getDifferenceV3();
         pm = op.aveV3;
         lvlText = 'lvl ' + op.level.toString();
         record = op.recordV3;
-        n = Save.nv3;
+        n = Save.nLast2;
+        validRecord=op.isValidRecordV3;
         break;
     }
-    if (record == -1)
+    if (record == -1 || !validRecord)
       recordText = '   ';
     else
       recordText = 'Record: $record';
+
     if (df < 0) {
       sign = '';
       c = Colors.green;

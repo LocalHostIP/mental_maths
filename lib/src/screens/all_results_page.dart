@@ -80,13 +80,13 @@ class _AllResultsPageState extends State<AllResultsPage> {
         ),
         DataColumn(
           label: Text(
-            'Last ' + Save.nv2.toString(),
+            'Last ' + Save.nLast1.toString(),
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
         ),
         DataColumn(
           label: Text(
-            'Last ' + Save.nv3.toString(),
+            'Last ' + Save.nLast2.toString(),
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
         ),

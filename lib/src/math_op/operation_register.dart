@@ -20,6 +20,17 @@ class OperationRegister {
 
   double recordV2 = 0;
   double recordV3 = 0;
+  bool isValidRecordV2=false; //True when reached number nV2 and nV3
+  bool isValidRecordV3=false;
+
+  static List<OperationRegister> readListFromJson(List<dynamic> opJson) {
+    ///Used to create a list of OPRegister items from a json
+    List<OperationRegister> op = [];
+    for (Map<String, dynamic> o in opJson) {
+      op.add(OperationRegister.fromJson(o));
+    }
+    return op;
+  }
 
   OperationRegister({required this.name, required this.level});
 
@@ -37,16 +48,10 @@ class OperationRegister {
         _lastAveV3 = json['lastPromV3'],
         isNew = json['isNew'],
         recordV2 = json['recordV2'],
-        recordV3 = json['recordV3'];
+        recordV3 = json['recordV3'],
+        isValidRecordV2 = json['isValidRecordV2'],
+        isValidRecordV3 = json['isValidRecordV3'];
 
-  static List<OperationRegister> readListFromJson(List<dynamic> opJson) {
-    ///Used to create a list of OPRegister items from a json
-    List<OperationRegister> op = [];
-    for (Map<String, dynamic> o in opJson) {
-      op.add(OperationRegister.fromJson(o));
-    }
-    return op;
-  }
 
   //ToJson -- For saving on files
   Map<String, dynamic> toJson() => { ///Encode to json
@@ -64,6 +69,8 @@ class OperationRegister {
         'isNew': isNew,
         'recordV2': recordV2,
         'recordV3': recordV3,
+        'isValidRecordV2':isValidRecordV2,
+        'isValidRecordV3':isValidRecordV3
       };
 
   void updateLastProm() {
@@ -78,14 +85,14 @@ class OperationRegister {
     aveTotal = sum / nTotal / 10;
     aveTotal = aveTotal.round() / 100;
 
-    if (history.length >= Save.nv2) {
-      aveV2 = _getSum(history, Save.nv2) / Save.nv2 / 10;
+    if (history.length >= Save.nLast1) {
+      aveV2 = _getSum(history, Save.nLast1) / Save.nLast1 / 10;
       aveV2 = aveV2.round() / 100;
     } else
       aveV2 = aveTotal;
 
-    if (history.length >= Save.nv3) {
-      aveV3 = _getSum(history, Save.nv3) / Save.nv3 / 10;
+    if (history.length >= Save.nLast2) {
+      aveV3 = _getSum(history, Save.nLast2) / Save.nLast2 / 10;
       aveV3 = aveV3.round() / 100;
     } else
       aveV3 = aveTotal;
@@ -93,12 +100,19 @@ class OperationRegister {
 
   void updateRecords() {
     ///Update register Records
-    if (aveV2 < recordV2 || recordV2 == 0 || nTotal <= Save.nv2) {
+    if (aveV2 < recordV2 || recordV2 == 0 || nTotal <= Save.nLast1) {
       recordV2 = aveV2;
     }
-    if (aveV3 < recordV3 || recordV3 == 0 || nTotal <= Save.nv3) {
+    
+    if (nTotal>=Save.nLast1)
+      this.isValidRecordV2=true;
+      
+    if (aveV3 < recordV3 || recordV3 == 0 || nTotal <= Save.nLast2) {
       recordV3 = aveV3;
     }
+
+    if (nTotal>=Save.nLast2)
+      this.isValidRecordV3=true;
   }
 
   void addOperation(Problem op) {
@@ -106,7 +120,7 @@ class OperationRegister {
     nTotal += 1;
     sum += op.time;
     history.add(op);
-    if (history.length > Save.nv3) {
+    if (history.length > Save.nLast2) {
       history.removeAt(0);
     }
     _updateAverage();

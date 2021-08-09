@@ -17,7 +17,7 @@ class TrainPage extends StatefulWidget {
   late Save _results; //Register of results
 
   TrainPage({Key? key, required this.tSettings,required this.savings}) : super(key: key){
-    _results = savings.results;
+    _results = savings.save;
   }
 
   @override
@@ -85,7 +85,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(onPressed: (){_showOperation();_showTimePenal(3+_mathProblem.getLevel());}, child: Text('View')),
+                  TextButton(onPressed: (){_showOperation();_showTimePenal(1+_mathProblem.getLevel());}, child: Text('View')),
                 ],
               )
             ],
@@ -130,7 +130,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
       //Keyboard
       Container(
         child: VirtualKeyboard(
-          height: height*.4,
+          height: height*.3,
           width: .9*width,
           textColor: Colors.black54,
           fontSize: 20,
@@ -297,7 +297,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     //update results
     widget._results.updateSave(_mathProblem.operations);
     //save results
-    widget.savings.save();
+    widget.savings.writeFile();
     //Open results page
     Navigator.of(context).pushNamed('/resultsPage');
   }

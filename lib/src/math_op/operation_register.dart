@@ -18,10 +18,12 @@ class OperationRegister {
   double _lastAveV3 = 0;
   bool isNew = true;
 
-  double recordV2 = 0;
-  double recordV3 = 0;
-  bool isValidRecordV2=false; //True when reached number nV2 and nV3
-  bool isValidRecordV3=false;
+  double recordL1 = 0;
+  double recordL2 = 0;
+  bool isValidRecordL1=false; //True when reached number nV2 and nV3
+  bool isValidRecordL2=false;
+
+  bool isArchived=false;
 
   static List<OperationRegister> readListFromJson(List<dynamic> opJson) {
     ///Used to create a list of OPRegister items from a json
@@ -47,10 +49,11 @@ class OperationRegister {
         aveV3 = json['promV3'],
         _lastAveV3 = json['lastPromV3'],
         isNew = json['isNew'],
-        recordV2 = json['recordV2'],
-        recordV3 = json['recordV3'],
-        isValidRecordV2 = json['isValidRecordV2'],
-        isValidRecordV3 = json['isValidRecordV3'];
+        recordL1 = json['recordV2'],
+        recordL2 = json['recordV3'],
+        isValidRecordL1 = json['isValidRecordV2'],
+        isValidRecordL2 = json['isValidRecordV3'],
+        isArchived = json['isArchived'];
 
 
   //ToJson -- For saving on files
@@ -67,10 +70,11 @@ class OperationRegister {
         'promV3': aveV3,
         'lastPromV3': _lastAveV3,
         'isNew': isNew,
-        'recordV2': recordV2,
-        'recordV3': recordV3,
-        'isValidRecordV2':isValidRecordV2,
-        'isValidRecordV3':isValidRecordV3
+        'recordV2': recordL1,
+        'recordV3': recordL2,
+        'isValidRecordV2':isValidRecordL1,
+        'isValidRecordV3':isValidRecordL2,
+        'isArchived':isArchived
       };
 
   void updateLastProm() {
@@ -100,19 +104,23 @@ class OperationRegister {
 
   void updateRecords() {
     ///Update register Records
-    if (aveV2 < recordV2 || recordV2 == 0 || nTotal <= Save.nLast1) {
-      recordV2 = aveV2;
+    if (aveV2 < recordL1 || recordL1 == 0 || nTotal <= Save.nLast1) {
+      recordL1 = aveV2;
     }
     
     if (nTotal>=Save.nLast1)
-      this.isValidRecordV2=true;
+      this.isValidRecordL1=true;
+    else
+      this.isValidRecordL1=false;
       
-    if (aveV3 < recordV3 || recordV3 == 0 || nTotal <= Save.nLast2) {
-      recordV3 = aveV3;
+    if (aveV3 < recordL2 || recordL2 == 0 || nTotal <= Save.nLast2) {
+      recordL2 = aveV3;
     }
 
     if (nTotal>=Save.nLast2)
-      this.isValidRecordV3=true;
+      this.isValidRecordL2=true;
+    else
+      this.isValidRecordL2=false;
   }
 
   void addOperation(Problem op) {
@@ -136,10 +144,12 @@ class OperationRegister {
     _lastAveV2 = 0;
     aveV3 = 0;
     _lastAveV3 = 0;
-    recordV3 = 0;
-    recordV2 = 0;
-
+    recordL2 = 0;
+    recordL1 = 0;
+    isValidRecordL1=false;
+    isValidRecordL2=false;
     isNew = true;
+    isArchived=false;
   }
 
   double _getSum(List<Problem> operations, int n) {
@@ -162,4 +172,5 @@ class OperationRegister {
   double getDifferenceV3() {
     return num.parse((aveV3 - _lastAveV3).toStringAsFixed(2)).toDouble();
   }
+
 }

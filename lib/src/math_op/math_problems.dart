@@ -35,6 +35,7 @@ class MathProblems {
     var nLength;
     int inf1;
     int inf2;
+
     num n1;
     num n2;
     for (var i = 0; i < this.limit; i++) {

@@ -52,7 +52,7 @@ class TrainResultsPage extends StatelessWidget {
             onPressed: () {
               _showStartTrainingPage(context);
             },
-            child: Icon(Icons.restart_alt),
+            child: Icon(Icons.replay_circle_filled),
           ),
         ),
       ),
@@ -100,17 +100,17 @@ class TrainResultsPage extends StatelessWidget {
         df = op.getDifferenceV2();
         pm = op.aveV2;
         lvlText = 'lvl ' + op.level.toString();
-        record = op.recordV2;
+        record = op.recordL1;
         n = Save.nLast1;
-        validRecord=op.isValidRecordV2;
+        validRecord=op.isValidRecordL1;
         break;
       case 3:
         df = op.getDifferenceV3();
         pm = op.aveV3;
         lvlText = 'lvl ' + op.level.toString();
-        record = op.recordV3;
+        record = op.recordL2;
         n = Save.nLast2;
-        validRecord=op.isValidRecordV3;
+        validRecord=op.isValidRecordL2;
         break;
     }
     if (record == -1 || !validRecord)

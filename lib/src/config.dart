@@ -1,4 +1,9 @@
+import 'package:mental_maths/src/math_op/archived.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
+
+class CurrentSelected{
+  Archived currentArchived = new Archived(MathProblems.OPSum, 1);
+}
 
 class TrainingSettings {
   ///Contains configuration for next training (Type of operation and levels)

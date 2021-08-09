@@ -6,11 +6,11 @@ import 'package:path_provider/path_provider.dart';
 
 class Savings {
   ///Controls results savings and file for saving
-  Save results = new Save();
+  Save save = new Save();
   
   Future<void> iniResults() async {
     ///Reads and validates results save
-    results = await readFile();
+    save = await readFile();
     await validateFile();
   }
 
@@ -27,10 +27,10 @@ class Savings {
     return File('$path/results.json');
   }
 
-  Future<File> save() async {
+  Future<File> writeFile() async {
     ///Save on file
     final file = await _localFile;
-    return file.writeAsString(json.encode(results.toJson()));
+    return file.writeAsString(json.encode(save.toJson()));
   }
 
   Future<Save> readFile() async {
@@ -40,7 +40,7 @@ class Savings {
       if (!file.existsSync()) {
         //If file don't exist create
         print('Creating file');
-        await save();
+        await writeFile();
       }
       // Read the file
       final contents = await file.readAsString();
@@ -48,7 +48,7 @@ class Savings {
     } catch (e) {
       print(e.toString());
       final file = await _localFile; //Create file if error
-      await save();
+      await writeFile();
       final contents = await file.readAsString();
       return Save.fromJson(jsonDecode(contents));
     }
@@ -56,10 +56,10 @@ class Savings {
 
   Future<void> validateFile() async {
     ///Validates save from file
-    if (results.updateFile == null ||
-        results.updateFile < Save.updateFileCode) {
-      results = new Save();
-      await save();
+    if (save.updateFile == null ||
+        save.updateFile < Save.updateFileCode) {
+      save = new Save();
+      await writeFile();
       print('Recreating results');
     }
   }

@@ -19,12 +19,12 @@ class ResultsChart {
       new ResultDataSeries(
           type: 'Last ' + Save.nLast1.toString(),
           average: result.aveV2,
-          record: result.recordV2,
+          record: result.recordL1,
           difference: result.getDifferenceV2()),
       new ResultDataSeries(
           type: 'Last ' + Save.nLast2.toString(),
           average: result.aveV3,
-          record: result.recordV3,
+          record: result.recordL2,
           difference: result.getDifferenceV3()),
       new ResultDataSeries(
           type: 'Total',
@@ -51,18 +51,24 @@ class ResultsChart {
           isDifference: true)
       ,
     ];
-    var data3 = [
-      new ResultDataSeries(
+    List<ResultDataSeries> data3 = [];
+    if (result.isValidRecordL1){
+      data3.add(new ResultDataSeries(
           type: 'Last ' + Save.nLast1.toString(),
           average: result.aveV2,
-          record: result.recordV2,
-          difference: result.getDifferenceV2()),
-      new ResultDataSeries(
+          record: result.recordL1,
+          difference: result.getDifferenceV2()));
+    }
+
+    if (result.isValidRecordL2){
+      data3.add(new ResultDataSeries(
           type: 'Last ' + Save.nLast2.toString(),
           average: result.aveV3,
-          record: result.recordV3,
-          difference: result.getDifferenceV3()),
-    ];
+          record: result.recordL2,
+          difference: result.getDifferenceV3()));
+    }
+
+
     _seriesBarData.add(charts.Series(
         id: 'Difference',
         data: data2,
@@ -98,9 +104,8 @@ class ResultsChart {
     return Expanded(
         child: charts.BarChart(
       _seriesBarData,
-      animate: true,
+      animate: false,
       barGroupingType: charts.BarGroupingType.stacked,
-      animationDuration: Duration(seconds: 1),
       barRendererDecorator: new charts.BarLabelDecorator(
         insideLabelStyleSpec: new charts.TextStyleSpec(
             fontSize: 12,

@@ -39,6 +39,14 @@ getDrawer(BuildContext context) {
                 context, "/allResultsPage", (r) => false);
           },
         ),
+        ListTile(
+          title: Text('Archived'),
+          leading: Icon(Icons.inventory),
+          onTap: () {
+            Navigator.pushNamedAndRemoveUntil(
+                context, "/archived", (r) => false);
+          },
+        )
       ],
     ),
   );

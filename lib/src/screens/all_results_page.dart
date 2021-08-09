@@ -10,11 +10,11 @@ import '../math_op/saving.dart';
 //ignore: must_be_immutable
 class AllResultsPage extends StatefulWidget {
   
-  late Save _results;
+  late Save _save;
   Savings savings;
 
   AllResultsPage({Key? key, required this.savings}) : super(key: key) {
-    _results = savings.results;
+    _save = savings.save;
   }
 
   @override
@@ -27,7 +27,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
 
   @override
   Widget build(BuildContext context) {
-    results = widget._results;
+    results = widget._save;
     resultChart = new ResultsChart(results);
     return MaterialApp(
       home: DefaultTabController(
@@ -68,107 +68,6 @@ class _AllResultsPageState extends State<AllResultsPage> {
     );
   }
 
-  Widget _getTable(String type) {
-    //Will be deleted
-    return DataTable(
-      columns: <DataColumn>[
-        DataColumn(
-          label: Text(
-            'Lvl',
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Last ' + Save.nLast1.toString(),
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Last ' + Save.nLast2.toString(),
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'All',
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Delete',
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        )
-      ],
-      rows: _getDataRows(type),
-    );
-  }
-
-  List<DataRow> _getDataRows(String type) {
-    var listType = results.addition;
-    if (type == MathProblems.OPSub) listType = results.subtraction;
-
-    List<DataRow> dts = [];
-
-    for (OperationRegister o in listType) {
-      if (o.nTotal != 0) {
-        dts.add(_getDataRow(o, type));
-      }
-    }
-
-    return dts;
-  }
-
-  DataRow _getDataRow(OperationRegister o, String type) {
-    Widget v2 = Icon(
-      Icons.horizontal_rule,
-      color: Colors.black54,
-    );
-    Widget v3 = Icon(
-      Icons.horizontal_rule,
-      color: Colors.black54,
-    );
-
-    v2 = Text(o.aveV2.toString() + 's');
-
-    v3 = Text(o.aveV3.toString() + 's');
-
-    Container pTotal = Container(
-        child: Row(
-      children: [
-        Text(o.aveTotal.toString() + 's  '),
-        Text(
-          '(' + o.nTotal.toString() + ')',
-          style: TextStyle(color: Colors.black54, fontSize: 12),
-        ),
-      ],
-    ));
-
-    //Text(o.promV2.toString()+'s')
-    return DataRow(
-      cells: <DataCell>[
-        DataCell(Text('lvl ' + o.level.toString())),
-        DataCell(v2),
-        DataCell(v3),
-        DataCell(pTotal),
-        DataCell(
-          Icon(
-            Icons.delete,
-            color: Colors.redAccent,
-          ),
-          onTap: () {
-            setState(() {
-              _showDeleteDialog(type, o.level);
-            });
-          },
-        )
-      ],
-    );
-  }
-
   Future<void> _showDeleteDialog(String type, int level) async {
     return showDialog<void>(
       context: context,
@@ -200,12 +99,108 @@ class _AllResultsPageState extends State<AllResultsPage> {
     );
   }
 
+  Future<void> _showRestartDialog(String type, int level) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete level $level'),
+          content: SingleChildScrollView(child: Text('Are you sure? (Archived data will be maintained)')),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Confirm'),
+              onPressed: () {
+                setState(() {
+                  results.deleteLevel(type, level);
+                  _saveResults();
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   List<Widget> _getGraphsCards(String type) {
     List<Widget> list = [];
     List<OperationRegister> listResult = results.addition;
     if (type == MathProblems.OPSub) listResult = results.subtraction;
+    String recordStringL1 = '       ';
+    String recordStringL2 = '       ';
+    Widget wArchive = Icon(Icons.save,color:Colors.blue); //Archived widget
+    Widget wRestart = Icon(Icons.delete,color:Colors.redAccent);
+
     for (OperationRegister o in listResult) {
-      if (o.nTotal != 0)
+      if (o.nTotal != 0) {
+
+        recordStringL1 = '         ';
+        recordStringL2 = '         ';
+        if (o.isValidRecordL1)
+          recordStringL1 = 'R: ' + o.recordL1.toString();
+        if (o.isValidRecordL2)
+          recordStringL2 = 'R: ' + o.recordL2.toString();
+
+        //Change icon for saving depending
+        if(results.isValidSaveToArchive(type,o.level)){
+          wArchive = GestureDetector(
+            child: Icon(
+              Icons.save,
+              color: Colors.blueAccent,
+            ),
+            onTap: () {
+              setState(() {
+                results.saveToArchive(type, o.level);
+                widget.savings.writeFile();
+              });
+            },
+          );
+        }else{
+          wArchive = GestureDetector(
+            child: Icon(
+              Icons.save,
+              color: Colors.grey,
+            )
+          );
+        }
+
+        //Restart icon
+        wRestart=GestureDetector(
+          child: Icon(
+            Icons.delete,
+            color: Colors.red,
+          ),
+          onTap: () {
+            _showDeleteDialog(type, o.level);
+          },
+          );
+
+
+        if(o.isArchived){
+          wArchive=Text('Saved',style: TextStyle(color: Colors.grey,fontSize: 11));
+          wRestart = Icon(Icons.new_label,color:Colors.blueGrey);
+
+          wRestart=GestureDetector(
+            child: Icon(
+              Icons.replay_circle_filled,
+              color: Colors.red,
+            ),
+            onTap: () {
+              _showRestartDialog(type, o.level);
+            },
+          );
+
+        }
+
+
         list.add(Container(
             height: 230,
             width: 500,
@@ -221,11 +216,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(
-                            'Total: ' + o.nTotal.toString(),
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.black54),
-                          ),
+                          wRestart,
                           Text(
                             'Level ' + o.level.toString(),
                             style: const TextStyle(
@@ -233,40 +224,34 @@ class _AllResultsPageState extends State<AllResultsPage> {
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black87),
                           ),
-                          GestureDetector(
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                            ),
-                            onTap: () {
-                              _showDeleteDialog(type, o.level);
-                            },
-                          )
+                          Text(
+                            'Total: ' + o.nTotal.toString(),
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.black54),
+                          ),
+                          wArchive
                         ],
                       ),
                     ),
                     SizedBox(height: 1),
                     resultChart.getBarChart(type, o.level),
+                    SizedBox(height: 4),
                     Container(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            'Record: ' + o.recordV2.toString(),
+                            recordStringL1,
                             style: const TextStyle(
                                 fontSize: 13, color: Colors.black54),
                           ),
                           Text(
-                            'Record: ' + o.recordV3.toString(),
+                            recordStringL2,
                             style: const TextStyle(
                                 fontSize: 13, color: Colors.black54),
                           ),
-                          Text(
-                            '              ',
-                            style: const TextStyle(
-                                fontSize: 13, color: Colors.black54),
-                          ),
+                          SizedBox(width: 40,)
                         ],
                       ),
                     )
@@ -274,13 +259,13 @@ class _AllResultsPageState extends State<AllResultsPage> {
                 ),
               ),
             )));
+      }
     }
-
     return list;
   }
 
   void _saveResults() {
-    widget.savings.save();
+    widget.savings.writeFile();
   }
 
   @override

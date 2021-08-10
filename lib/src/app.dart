@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {//ignore: must_be_immutable
         '/startTrain': (BuildContext context) =>
             StartTrainPage(tSettings: trainSettings),
         '/trainer': (BuildContext context) =>
-            TrainPage(trainSettings: trainSettings, savings: fileControl,uiSettings: fileControl.uiSettings),
+            TrainPage(trainSettings: trainSettings, savings: fileControl,settings: fileControl.settings),
         '/resultsPage': (BuildContext context) =>
             TrainResultsPage(results: fileControl.save),
         '/allResultsPage': (BuildContext context) =>
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {//ignore: must_be_immutable
         '/selectedArchived' : (BuildContext context) =>
             SelectedArchivePage(archived: currentSelected.currentArchived,saving: fileControl),
         '/config' : (BuildContext context) =>
-            ConfigPage(),
+            ConfigPage(fileControl: fileControl),
         '/config/keyboardSize': (BuildContext context) =>
             KeyboardSizePage(fileControl: fileControl),
       },

@@ -107,7 +107,6 @@ class MathProblems {
     if (currentIndex != -1) {
       _stopClock();
       operations[currentIndex].setTime(_stopwatch.elapsed.inMilliseconds);
-      //print(operations[currentIndex].time/1000);
     }
 
     if (this.currentIndex < this.limit - 1) {

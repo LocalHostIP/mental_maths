@@ -7,10 +7,10 @@ import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.
 
 class KeyboardSizePage extends StatefulWidget {
   KeyboardSizePage({Key? key,required this.fileControl}) : super(key: key){
-    uiSettings=fileControl.uiSettings;
+    uiSettings=fileControl.settings;
   }
   FileControl fileControl;
-  late UISettings uiSettings;
+  late Settings uiSettings;
   @override
   _KeyboardSizePageState createState() => _KeyboardSizePageState();
 }

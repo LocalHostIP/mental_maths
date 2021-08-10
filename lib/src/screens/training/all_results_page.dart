@@ -184,7 +184,6 @@ class _AllResultsPageState extends State<AllResultsPage> {
           },
           );
 
-
         if(o.isArchived){
           wArchive=Text('Saved',style: TextStyle(color: Colors.grey,fontSize: 11));
           wRestart = Icon(Icons.new_label,color:Colors.blueGrey);

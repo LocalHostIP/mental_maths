@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 class FileControl {
   ///Controls results savings and file for saving
   Save save = new Save();
-  UISettings uiSettings = new UISettings();
+  Settings settings = new Settings();
   
   String nameResultsFile = '/results.json';
   String nameConfigFile = '/config.json';
@@ -20,7 +20,8 @@ class FileControl {
   }
 
   Future<void> iniConfig() async{
-    uiSettings = await readConfig();
+    settings = await readConfig();
+    print(settings.extraTime);
   }
 
   Future<String> get _localPath async {
@@ -42,9 +43,10 @@ class FileControl {
   }
 
   Future<File> saveConfig() async {
+    print('saving config file');
     ///Save on file
     final file = await _localFile(nameConfigFile);
-    return file.writeAsString(json.encode(uiSettings.toJson()));
+    return file.writeAsString(json.encode(settings.toJson()));
   }
 
   Future<Save> readResults() async {
@@ -68,7 +70,7 @@ class FileControl {
     }
   }
 
-  Future<UISettings> readConfig() async {
+  Future<Settings> readConfig() async {
     ///Read save file results
     try {
       final file = await _localFile(nameConfigFile);
@@ -79,14 +81,14 @@ class FileControl {
       }
       // Read the file
       final contents = await file.readAsString();
-      return UISettings.fromJson(jsonDecode(contents));
+      return Settings.fromJson(jsonDecode(contents));
     } catch (e) {
       print(e.toString());
       //Create file if error
       final file = await _localFile(nameConfigFile);
       await saveConfig();
       final contents = await file.readAsString();
-      return UISettings.fromJson(jsonDecode(contents));
+      return Settings.fromJson(jsonDecode(contents));
     }
   }
 

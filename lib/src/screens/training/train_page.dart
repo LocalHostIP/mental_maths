@@ -12,12 +12,12 @@ import '../../math_op/save.dart';
 
 //ignore: must_be_immutable
 class TrainPage extends StatefulWidget {
-  UISettings uiSettings;
+  Settings settings;
   TrainingSettings trainSettings; //General settings, including Type of problems
   FileControl savings;
   late Save _results; //Register of results
 
-  TrainPage({Key? key, required this.trainSettings,required this.savings,required this.uiSettings}) : super(key: key){
+  TrainPage({Key? key, required this.trainSettings,required this.savings,required this.settings}) : super(key: key){
     _results = savings.save;
   }
 
@@ -131,8 +131,8 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
       //Keyboard
       Container(
         child: VirtualKeyboard(
-          height: height * (widget.uiSettings.keyboardHeight/100),
-          width: (widget.uiSettings.keyboardWidth/100) * width,
+          height: height * (widget.settings.keyboardHeight/100),
+          width: (widget.settings.keyboardWidth/100) * width,
           textColor: Colors.black54,
           fontSize: 20,
           defaultLayouts: [VirtualKeyboardDefaultLayouts.English],
@@ -222,9 +222,11 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
 
   void _showOperation(){
     /// Starts animation for showing the numbers of the problem ///
-    /// print('level:');
-    _cAnimationOperationText.duration=Duration(milliseconds:100+_mathProblem.getLevel()*200);
+    _cAnimationOperationText.duration=Duration(milliseconds:((1000*widget.settings.extraTime)/2).round()+100+_mathProblem.getLevel()*200);
     _cAnimationOperationText.forward(from:0);
+    if(widget.settings.extraTime!=0){
+      _mathProblem.increaseTimePenalization((widget.settings.extraTime*1000).round());
+    }
   }
   
   void _showTimePenal(int seconds){
@@ -250,10 +252,10 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     _controllerField.text=ch;
     FocusScope.of(context).requestFocus(_focusNodeField);
     _controllerField.selection = TextSelection.fromPosition(TextPosition(offset: _controllerField.text.length));
-
     //check if is correct answer1
 
     if(_mathProblem.checkAnswer(num.parse(ch))){
+
         setState(() {
           _mathProblem.nextProblem();
           _colorInput=Colors.green;

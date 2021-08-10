@@ -6,22 +6,25 @@ class CurrentSelected{
   Archived currentArchived = new Archived(MathProblems.OPSum, 1);
 }
 
-class UISettings{
+class Settings{
   double keyboardWidth=90;
   double keyboardHeight=30;
+  double extraTime=0;
 
   Map<String, dynamic> toJson() => {
     ///Encoding to json
     'keyboardWidth': keyboardWidth,
     'keyboardHeight': keyboardHeight,
+    'extraTime': extraTime,
   };
 
-  UISettings.fromJson(Map<String,dynamic> json){
+  Settings.fromJson(Map<String,dynamic> json){
     keyboardWidth = json['keyboardWidth'];
     keyboardHeight = json['keyboardHeight'];
+    extraTime = json['extraTime'];
   }
 
-  UISettings();
+  Settings();
 }
 
 class TrainingSettings {

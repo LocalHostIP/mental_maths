@@ -157,6 +157,10 @@ class _StartTrainPageState extends State<StartTrainPage> {
       _lvlSub = _lvlSub + i.toString() + ',';
     }
     _lvlSub = _lvlSub.substring(0, _lvlSub.length - 1);
+
+    _limit=widget.tSettings.limitOP.toDouble();
+
     super.initState();
   }
+
 }

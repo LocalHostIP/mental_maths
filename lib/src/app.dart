@@ -1,46 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:mental_maths/src/config.dart';
-import 'package:mental_maths/src/math_op/saving.dart';
-import 'package:mental_maths/src/screens/all_results_page.dart';
-import 'package:mental_maths/src/screens/current_selected_archived_page.dart';
-import 'package:mental_maths/src/screens/select_archived_page.dart';
-import 'package:mental_maths/src/screens/config_levels.dart';
-import 'package:mental_maths/src/screens/start_train_page.dart';
-import 'package:mental_maths/src/screens/train_page.dart';
-import 'package:mental_maths/src/screens/train_results_page.dart';
+import 'package:mental_maths/src/math_op/file_control.dart';
+import 'package:mental_maths/src/screens/config/keyboard_size_page.dart';
+import 'package:mental_maths/src/screens/training/all_results_page.dart';
+import 'package:mental_maths/src/screens/archive/current_selected_archived_page.dart';
+import 'package:mental_maths/src/screens/config/general_config_page.dart';
+import 'package:mental_maths/src/screens/archive/select_archived_page.dart';
+import 'package:mental_maths/src/screens/training/config_levels.dart';
+import 'package:mental_maths/src/screens/training/start_train_page.dart';
+import 'package:mental_maths/src/screens/training/train_page.dart';
+import 'package:mental_maths/src/screens/training/train_results_page.dart';
 
 class MyApp extends StatelessWidget {//ignore: must_be_immutable
-  TrainingSettings tSettings = new TrainingSettings(); //Controls training settings
-  Savings savings = new Savings(); //Controls savings and file savings
+  TrainingSettings trainSettings = new TrainingSettings(); //Controls training settings
+  FileControl fileControl = new FileControl(); //Controls savings and file savings
   CurrentSelected currentSelected = new CurrentSelected();
 
   MyApp() {
-    savings.iniResults(); //Reads file savings
+    fileControl.iniResults(); //Reads file savings
+    fileControl.iniConfig();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Mental Maths',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+
+      themeMode: ThemeMode.system,
+
       initialRoute: '/startTrain',
       routes: {
         '/startTrain': (BuildContext context) =>
-            StartTrainPage(tSettings: tSettings),
+            StartTrainPage(tSettings: trainSettings),
         '/trainer': (BuildContext context) =>
-            TrainPage(tSettings: tSettings, savings: savings),
+            TrainPage(trainSettings: trainSettings, savings: fileControl,uiSettings: fileControl.uiSettings),
         '/resultsPage': (BuildContext context) =>
-            TrainResultsPage(results: savings.save),
+            TrainResultsPage(results: fileControl.save),
         '/allResultsPage': (BuildContext context) =>
-            AllResultsPage(savings: savings),
+            AllResultsPage(savings: fileControl),
         '/configLevels': (BuildContext context) =>
-            ConfigLevelsPage(tSettings: tSettings),
+            ConfigLevelsPage(tSettings: trainSettings),
         '/archived':(BuildContext context) =>
-            SelectArchivedPage(save: savings.save,currentSelected: currentSelected),
+            SelectArchivedPage(save: fileControl.save,currentSelected: currentSelected),
         '/selectedArchived' : (BuildContext context) =>
-            SelectedArchivePage(archived: currentSelected.currentArchived,saving: savings)
+            SelectedArchivePage(archived: currentSelected.currentArchived,saving: fileControl),
+        '/config' : (BuildContext context) =>
+            ConfigPage(),
+        '/config/keyboardSize': (BuildContext context) =>
+            KeyboardSizePage(fileControl: fileControl),
       },
     );
   }

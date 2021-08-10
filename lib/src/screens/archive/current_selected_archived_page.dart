@@ -3,13 +3,13 @@ import 'package:mental_maths/src/math_op/archived.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
 import 'package:mental_maths/src/math_op/save.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:mental_maths/src/math_op/saving.dart';
+import 'package:mental_maths/src/math_op/file_control.dart';
 
 
 //ignore: must_be_immutable
 class SelectedArchivePage extends StatefulWidget {
   Archived archived;
-  Savings saving;
+  FileControl saving;
   SelectedArchivePage({Key? key,required this.archived,required this.saving}) : super(key: key);
 
   @override
@@ -18,7 +18,7 @@ class SelectedArchivePage extends StatefulWidget {
 
 class _SelectedArchivePageState extends State<SelectedArchivePage> {
   late Archived _archived;
-  late Savings _saving;
+  late FileControl _saving;
 
   late List<charts.Series<ArchivedChartData,int>> _seriesData;
   @override
@@ -235,7 +235,7 @@ class _SelectedArchivePageState extends State<SelectedArchivePage> {
               onPressed: () {
                 setState(() {
                   _archived.updateRecords();
-                  _saving.writeFile();
+                  _saving.saveResults();
                 });
                 Navigator.of(context).pop();
               },
@@ -266,10 +266,10 @@ class _SelectedArchivePageState extends State<SelectedArchivePage> {
               onPressed: () {
                 setState(() {
                   _archived.delete(index);
-                  if(_saving.save.getListByType(_archived.typeOp)[_archived.level].isArchived){
+                  if(_saving.save.getResultsListByType(_archived.typeOp)[_archived.level].isArchived){
                     _saving.save.deleteLevel(_archived.typeOp, _archived.level);
                   }
-                  _saving.writeFile();
+                  _saving.saveResults();
                 });
                 Navigator.of(context).pop();
               },
@@ -286,9 +286,6 @@ class _SelectedArchivePageState extends State<SelectedArchivePage> {
     );
   }
 }
-
-
-
 
 class ArchivedChartData{
   final int index;

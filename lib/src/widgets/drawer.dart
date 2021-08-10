@@ -27,24 +27,32 @@ getDrawer(BuildContext context) {
           title: Text('Train'),
           leading: Icon(Icons.timer),
           onTap: () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, "/startTrain", (r) => false);
+            Navigator.pushReplacementNamed(
+                context, "/startTrain");
           },
         ),
         ListTile(
           title: Text('Results'),
           leading: Icon(Icons.timeline),
           onTap: () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, "/allResultsPage", (r) => false);
+            Navigator.pushReplacementNamed(
+                context, "/allResultsPage");
           },
         ),
         ListTile(
           title: Text('Archived'),
           leading: Icon(Icons.inventory),
           onTap: () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, "/archived", (r) => false);
+            Navigator.pushReplacementNamed(
+                context, "/archived");
+          },
+        ),
+        ListTile(
+          title: Text('Settings'),
+          leading: Icon(Icons.settings),
+          onTap: () {
+            Navigator.pushReplacementNamed(
+                context, "/config");
           },
         )
       ],

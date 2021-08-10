@@ -12,9 +12,9 @@ class ResultsChart {
 
   void _generateCurrentLevelData(String type, int level) {
     _seriesBarData = [];
-    OperationRegister result = _results.addition[level];
+    OperationRegister result = _results.resultsSum[level];
 
-    if (type == MathProblems.OPSub) result = _results.subtraction[level];
+    if (type == MathProblems.OPSub) result = _results.resultsSub[level];
     var data1 = [
       new ResultDataSeries(
           type: 'Last ' + Save.nLast1.toString(),

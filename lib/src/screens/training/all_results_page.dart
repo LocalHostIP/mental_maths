@@ -5,13 +5,13 @@ import 'package:mental_maths/src/math_op/save.dart';
 import 'package:mental_maths/src/widgets/drawer.dart';
 import 'package:mental_maths/src/widgets/results_chart.dart';
 
-import '../math_op/saving.dart';
+import '../../math_op/file_control.dart';
 
 //ignore: must_be_immutable
 class AllResultsPage extends StatefulWidget {
   
   late Save _save;
-  Savings savings;
+  FileControl savings;
 
   AllResultsPage({Key? key, required this.savings}) : super(key: key) {
     _save = savings.save;
@@ -34,6 +34,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
         length: 2,
         child: Scaffold(
           drawer: getDrawer(context),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppBar(
             bottom: TabBar(
               tabs: [
@@ -132,8 +133,8 @@ class _AllResultsPageState extends State<AllResultsPage> {
 
   List<Widget> _getGraphsCards(String type) {
     List<Widget> list = [];
-    List<OperationRegister> listResult = results.addition;
-    if (type == MathProblems.OPSub) listResult = results.subtraction;
+    List<OperationRegister> listResult = results.resultsSum;
+    if (type == MathProblems.OPSub) listResult = results.resultsSub;
     String recordStringL1 = '       ';
     String recordStringL2 = '       ';
     Widget wArchive = Icon(Icons.save,color:Colors.blue); //Archived widget
@@ -159,7 +160,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
             onTap: () {
               setState(() {
                 results.saveToArchive(type, o.level);
-                widget.savings.writeFile();
+                widget.savings.saveResults();
               });
             },
           );
@@ -265,7 +266,7 @@ class _AllResultsPageState extends State<AllResultsPage> {
   }
 
   void _saveResults() {
-    widget.savings.writeFile();
+    widget.savings.saveResults();
   }
 
   @override

@@ -10,8 +10,8 @@ class Save {
   double updateFile = Save.updateFileCode;
 
   //All levels of operation, each position of the list is a corresponding level
-  List<OperationRegister> addition = [];
-  List<OperationRegister> subtraction = [];
+  List<OperationRegister> resultsSum = [];
+  List<OperationRegister> resultsSub = [];
   //Contains the newly updated levels of a operation, first item has addition, second subtraction
   List<List<int>> updated = [];
   //Contains the max level of an operation
@@ -22,8 +22,8 @@ class Save {
   
   Save.fromJson(Map<String, dynamic> json){
       ///Create save from save file (json)
-    addition = OperationRegister.readListFromJson(json['addition']);
-    subtraction = OperationRegister.readListFromJson(json['subtraction']);
+    resultsSum = OperationRegister.readListFromJson(json['addition']);
+    resultsSub = OperationRegister.readListFromJson(json['subtraction']);
     updateFile = json['updateFile'];
     archivedSum = Archived.readListFromJson(json['archivedSum']);
     archivedSub = Archived.readListFromJson(json['archivedSub']);
@@ -31,8 +31,8 @@ class Save {
   
   Map<String, dynamic> toJson() => {
       ///Encoding to json
-        'addition': addition,
-        'subtraction': subtraction,
+        'addition': resultsSum,
+        'subtraction': resultsSub,
         'updateFile': updateFile,
         'archivedSum': archivedSum,
         'archivedSub':archivedSub
@@ -41,18 +41,25 @@ class Save {
   Save() {
     //Initiate all levels on every operation.dart
     for (int l = 1; l <= maxLevel; l++) {
-      addition.add(OperationRegister(name: 'Addition', level: l - 1));
-      subtraction.add(OperationRegister(name: 'Subtraction', level: l - 1));
+      resultsSum.add(OperationRegister(name: 'Addition', level: l - 1));
+      resultsSub.add(OperationRegister(name: 'Subtraction', level: l - 1));
     }
     _restartUpdate();
     _restartArchived();
   }
 
-  List<OperationRegister> getListByType(String type){
+  List<OperationRegister> getResultsListByType(String type){
     if(type==MathProblems.OPSum)
-      return addition;
+      return resultsSum;
     else
-      return subtraction;
+      return resultsSub;
+  }
+  
+  List<Archived> getArchivesListByType(String type){
+    if(type==MathProblems.OPSum)
+      return archivedSum;
+    else
+      return archivedSub;
   }
 
   void _restartUpdate(){
@@ -71,25 +78,22 @@ class Save {
   }
 
   void _updateArchive(String type,int level){
-    var archives = archivedSum;
-    var register = addition[level];
-
-    if (type==MathProblems.OPSub) {
-      archives = archivedSub;
-      register = subtraction[level];
-    }
+    
+    var archives = getArchivesListByType(type)[level];
+    var register = getResultsListByType(type)[level];
+    
     if(register.isArchived){
-      archives[level].bestsL1[archives[level].lastIndex]=register.recordL1;
-      archives[level].bestsL2[archives[level].lastIndex]=register.recordL2;
-      archives[level].averages[archives[level].lastIndex]=register.aveTotal;
-      archives[level].totals[archives[level].lastIndex]=register.nTotal;
+      archives.bestsL1[archives.lastIndex]=register.recordL1;
+      archives.bestsL2[archives.lastIndex]=register.recordL2;
+      archives.averages[archives.lastIndex]=register.aveTotal;
+      archives.totals[archives.lastIndex]=register.nTotal;
 
-      if(archives[level].bestL1>register.recordL1 || archives[level].bestL1==0)
-        archives[level].bestL1=register.recordL1;
-      if(archives[level].bestL2>register.recordL2 || archives[level].bestL2==0)
-        archives[level].bestL2=register.recordL2;
-      if(archives[level].bestAve>register.aveTotal || archives[level].bestAve==0)
-        archives[level].bestAve=register.aveTotal;
+      if(archives.bestL1>register.recordL1 || archives.bestL1==0)
+        archives.bestL1=register.recordL1;
+      if(archives.bestL2>register.recordL2 || archives.bestL2==0)
+        archives.bestL2=register.recordL2;
+      if(archives.bestAve>register.aveTotal || archives.bestAve==0)
+        archives.bestAve=register.aveTotal;
     }
 
   }
@@ -109,31 +113,31 @@ class Save {
 
     //Update last prom for addition
     for (int i in updated[0]) {
-      addition[i].updateLastProm();
+      resultsSum[i].updateLastProm();
     }
     //Update last prom for subtraction
     for (int i in updated[1]) {
-      subtraction[i].updateLastProm();
+      resultsSub[i].updateLastProm();
     }
 
     //Update average
     for (Problem op in operations) {
       if (op.operator == MathProblems.OPSum) {
-        addition[op.level].addOperation(op);
+        resultsSum[op.level].addOperation(op);
       } else if (op.operator == MathProblems.OPSub) {
-        subtraction[op.level].addOperation(op);
+        resultsSub[op.level].addOperation(op);
       }
     }
 
     //update record and archive
     for (int i in updated[0]) {
-      addition[i].updateRecords();
-      if(addition[i].isArchived)
+      resultsSum[i].updateRecords();
+      if(resultsSum[i].isArchived)
         _updateArchive(MathProblems.OPSum, i);
     }
     for (int i in updated[1]) {
-      subtraction[i].updateRecords();
-      if(subtraction[i].isArchived)
+      resultsSub[i].updateRecords();
+      if(resultsSub[i].isArchived)
         _updateArchive(MathProblems.OPSum, i);
     }
 
@@ -141,38 +145,36 @@ class Save {
   
   void saveToArchive(String type,int level){
     if (this.isValidSaveToArchive(type,level)){
-      var archives = archivedSum;
-      var register = addition[level];
+      var archives = getArchivesListByType(type)[level];
+      var register = getResultsListByType(type)[level];
 
       if (type==MathProblems.OPSub) {
-        archives = archivedSub;
-        register = subtraction[level];
+        archives = archivedSub[level];
+        register = resultsSub[level];
       }
 
       register.isArchived=true;
 
-      archives[level].lastIndex+=1;
-      archives[level].bestsL1.add(register.recordL1);
-      archives[level].bestsL2.add(register.recordL2);
-      archives[level].averages.add(register.aveTotal);
-      archives[level].totals.add(register.nTotal);
+      archives.lastIndex+=1;
+      archives.bestsL1.add(register.recordL1);
+      archives.bestsL2.add(register.recordL2);
+      archives.averages.add(register.aveTotal);
+      archives.totals.add(register.nTotal);
 
-      if(archives[level].bestL1>register.recordL1 || archives[level].bestL1==0)
-        archives[level].bestL1=register.recordL1;
-      if(archives[level].bestL2>register.recordL2 || archives[level].bestL2==0)
-        archives[level].bestL2=register.recordL2;
-      if(archives[level].bestAve>register.aveTotal || archives[level].bestAve==0)
-        archives[level].bestAve=register.aveTotal;
+      if(archives.bestL1>register.recordL1 || archives.bestL1==0)
+        archives.bestL1=register.recordL1;
+      if(archives.bestL2>register.recordL2 || archives.bestL2==0)
+        archives.bestL2=register.recordL2;
+      if(archives.bestAve>register.aveTotal || archives.bestAve==0)
+        archives.bestAve=register.aveTotal;
     }
   }
 
   bool isValidSaveToArchive(String type, int level){
-    var register = addition[level];
-    var archives = archivedSum[level];
-    if (type==MathProblems.OPSub) {
-      archives = archivedSub[level];
-      register = subtraction[level];
-    }
+
+    var archives = getArchivesListByType(type)[level];
+    var register = getResultsListByType(type)[level];
+
     //Validate
     if(register.nTotal<Save.nLast2 || archives.lastIndex>=Archived.nMax-1)
       return false;
@@ -181,20 +183,11 @@ class Save {
   }
 
   void deleteLevel(String type, int level) {
-    if (type == MathProblems.OPSum) {
-      addition[level].restart();
-    } else if (type == MathProblems.OPSub) {
-      subtraction[level].restart();
-    }
+    getResultsListByType(type)[level].restart();
   }
 
   void updateArchiveRecord(String type,int level){
-    var archives = archivedSum[level];
-
-    if (type==MathProblems.OPSub) {
-      archives = archivedSub[level];
-    }
-
+    var archives = getArchivesListByType(type)[level];
     archives.updateRecords();
   }
 

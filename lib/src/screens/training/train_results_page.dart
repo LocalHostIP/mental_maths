@@ -63,12 +63,12 @@ class TrainResultsPage extends StatelessWidget {
     List<Widget> r = [];
     OperationRegister op;
     for (int i in results.updated[0]) {
-      op = results.addition[i];
+      op = results.resultsSum[i];
       r.add(getTile('Addition', op, type));
     }
 
     for (int i in results.updated[1]) {
-      op = results.subtraction[i];
+      op = results.resultsSub[i];
       r.add(getTile('Subtraction', op, type));
     }
 

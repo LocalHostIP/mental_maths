@@ -4,7 +4,7 @@ import 'package:mental_maths/src/math_op/math_problems.dart';
 import 'package:mental_maths/src/math_op/save.dart';
 import 'package:mental_maths/src/widgets/drawer.dart';
 
-import '../config.dart';
+import '../../config.dart';
 
 //ignore: must_be_immutable
 class SelectArchivedPage extends StatefulWidget {
@@ -20,11 +20,11 @@ class _SelectArchivedPageState extends State<SelectArchivedPage> {
   late Save save;
   Widget build(BuildContext context) {
     save = widget.save;
-
     return MaterialApp(
       home: DefaultTabController(
         length: 2,
         child: Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           drawer: getDrawer(context),
           appBar: AppBar(
             bottom: TabBar(
@@ -46,7 +46,7 @@ class _SelectArchivedPageState extends State<SelectArchivedPage> {
                 child:Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: _getList(MathProblems.OPSum),
+                  children: _getList(context,MathProblems.OPSum),
                 ),)
               ),
               //),
@@ -56,7 +56,7 @@ class _SelectArchivedPageState extends State<SelectArchivedPage> {
                   child:Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: _getList(MathProblems.OPSub),
+                  children: _getList(context,MathProblems.OPSub),
                 ),)
               ),
             ],
@@ -66,7 +66,7 @@ class _SelectArchivedPageState extends State<SelectArchivedPage> {
     );
   }
 
-  List<Widget> _getList(String type) {
+  List<Widget> _getList(BuildContext context,String type) {
     var listType = save.archivedSum;
     List<Widget> list = [];
     if (type == MathProblems.OPSub) listType = save.archivedSub;
@@ -78,7 +78,7 @@ class _SelectArchivedPageState extends State<SelectArchivedPage> {
           child: new ListTile(
             leading: Icon(Icons.inventory,color: Colors.lightBlueAccent,),
             title: Text('Level ' + a.level.toString(),
-            style: TextStyle(color: Colors.black87),),
+            style: Theme.of(context).primaryTextTheme.headline2),
             subtitle: Text((a.lastIndex+1).toString()+'/'+Archived.nMax.toString()+' archived'),
             onTap: (){
               setState(() {

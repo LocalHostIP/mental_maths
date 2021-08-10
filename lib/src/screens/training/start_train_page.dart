@@ -21,7 +21,6 @@ class _StartTrainPageState extends State<StartTrainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey.shade50,
         appBar: AppBar(
           title: Text('Train'),
         ),
@@ -63,8 +62,7 @@ class _StartTrainPageState extends State<StartTrainPage> {
                           Text('Addition'),
                           Text(
                             'lvl (' + _lvlSum + ')',
-                            style: const TextStyle(
-                                color: Colors.black54, fontSize: 15),
+                            style: const TextStyle(fontSize: 15),
                           )
                         ]),
                     trailing: Icon(Icons.keyboard_arrow_right),
@@ -116,6 +114,8 @@ class _StartTrainPageState extends State<StartTrainPage> {
               height: 20,
             ),
             Slider(
+              activeColor: Theme.of(context).primaryColor,
+
               value: _limit,
               onChanged: (ch) {
                 setState(() {

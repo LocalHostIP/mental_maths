@@ -4,19 +4,20 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
-import 'package:mental_maths/src/math_op/saving.dart';
+import 'package:mental_maths/src/math_op/file_control.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
-import '../config.dart';
-import '../math_op/save.dart';
+import '../../config.dart';
+import '../../math_op/save.dart';
 
 //ignore: must_be_immutable
 class TrainPage extends StatefulWidget {
-  TrainingSettings tSettings; //General settings, including Type of problems
-  Savings savings;
+  UISettings uiSettings;
+  TrainingSettings trainSettings; //General settings, including Type of problems
+  FileControl savings;
   late Save _results; //Register of results
 
-  TrainPage({Key? key, required this.tSettings,required this.savings}) : super(key: key){
+  TrainPage({Key? key, required this.trainSettings,required this.savings,required this.uiSettings}) : super(key: key){
     _results = savings.save;
   }
 
@@ -130,8 +131,8 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
       //Keyboard
       Container(
         child: VirtualKeyboard(
-          height: height*.3,
-          width: .9*width,
+          height: height * (widget.uiSettings.keyboardHeight/100),
+          width: (widget.uiSettings.keyboardWidth/100) * width,
           textColor: Colors.black54,
           fontSize: 20,
           defaultLayouts: [VirtualKeyboardDefaultLayouts.English],
@@ -185,10 +186,10 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     //Create MathProblems
     //create levels array
     List<List<int>> lvls = [];
-    var ops=widget.tSettings.getActiveOperators();
+    var ops=widget.trainSettings.getActiveOperators();
     for (String op in ops)
-      lvls.add(widget.tSettings.getLevels(op));
-    _mathProblem = MathProblems(widget.tSettings.limitOP,ops,lvls);
+      lvls.add(widget.trainSettings.getLevels(op));
+    _mathProblem = MathProblems(widget.trainSettings.limitOP,ops,lvls);
 
     //Start first problem timer
     _mathProblem.nextProblem();
@@ -222,7 +223,6 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
   void _showOperation(){
     /// Starts animation for showing the numbers of the problem ///
     /// print('level:');
-    print(_mathProblem.getLevel());
     _cAnimationOperationText.duration=Duration(milliseconds:100+_mathProblem.getLevel()*200);
     _cAnimationOperationText.forward(from:0);
   }
@@ -258,21 +258,19 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
           _mathProblem.nextProblem();
           _colorInput=Colors.green;
           _showTimeOperation();
-          if(_mathProblem.finished)
-            _showResults(context);
-          //print(mathProblem.limit);
-          //print(mathProblem.currentIndex);
-
-          //Detener temporizador de problema y actualizar al siguiente problema si aun se puede
         });
-        _showOperation();
 
-        Future.delayed(Duration(milliseconds: 300+100*_mathProblem.getLevel()),(){
-          setState(() {
-            this._controllerField.text='';
-            _colorInput=Colors.black54;
+        if(_mathProblem.finished)
+          _showResults(context);
+        else{
+          _showOperation();
+          Future.delayed(Duration(milliseconds: 300+100*_mathProblem.getLevel()),(){
+            setState(() {
+              this._controllerField.text='';
+              _colorInput=Colors.black54;
+            });
           });
-        });
+        }
       }
       else{
         //Only when submitted (entered pressed) give feedback that answer is wrong
@@ -297,9 +295,9 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     //update results
     widget._results.updateSave(_mathProblem.operations);
     //save results
-    widget.savings.writeFile();
+    widget.savings.saveResults();
     //Open results page
-    Navigator.of(context).pushNamed('/resultsPage');
+    Navigator.pushReplacementNamed(context, '/resultsPage');
   }
 
 }

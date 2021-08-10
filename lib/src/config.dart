@@ -1,8 +1,27 @@
+import 'package:flutter/material.dart';
 import 'package:mental_maths/src/math_op/archived.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
 
 class CurrentSelected{
   Archived currentArchived = new Archived(MathProblems.OPSum, 1);
+}
+
+class UISettings{
+  double keyboardWidth=90;
+  double keyboardHeight=30;
+
+  Map<String, dynamic> toJson() => {
+    ///Encoding to json
+    'keyboardWidth': keyboardWidth,
+    'keyboardHeight': keyboardHeight,
+  };
+
+  UISettings.fromJson(Map<String,dynamic> json){
+    keyboardWidth = json['keyboardWidth'];
+    keyboardHeight = json['keyboardHeight'];
+  }
+
+  UISettings();
 }
 
 class TrainingSettings {

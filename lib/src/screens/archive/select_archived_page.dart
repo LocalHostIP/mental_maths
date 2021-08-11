@@ -77,8 +77,7 @@ class _SelectArchivedPageState extends State<SelectArchivedPage> {
           elevation: 5,
           child: new ListTile(
             leading: Icon(Icons.inventory,color: Colors.lightBlueAccent,),
-            title: Text('Level ' + a.level.toString(),
-            style: Theme.of(context).primaryTextTheme.headline2),
+            title: Text('Level ' + a.level.toString()),
             subtitle: Text((a.lastIndex+1).toString()+'/'+Archived.nMax.toString()+' archived'),
             onTap: (){
               setState(() {

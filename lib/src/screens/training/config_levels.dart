@@ -20,6 +20,9 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
   bool _lvl4 = false;
   bool _lvl5 = false;
   bool _lvl6 = false;
+  bool _lvl7 = false;
+  bool _lvl8 = false;
+  bool _lvl9 = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +30,26 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
       appBar: AppBar(
         title: Text(_operationTitle + ' levels'),
       ),
-      body: Column(
+      body: SingleChildScrollView(child:
+      Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+              width: 120,
+              height: 40, // <-- Your width
+              child: ElevatedButton(
+                onPressed: () {
+                  _showStartTrainPage(context);
+                },
+                child: Text("Accept"),
+              )),
+
+          SizedBox(
+            height: 10,
+          ),
           Card(
             elevation: 4,
             margin: const EdgeInsets.fromLTRB(32.0, 8, 32, 16),
@@ -47,7 +67,7 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
                   },
                   title: Text('Level 1'),
                   secondary:
-                      Text('9' + widget.tSettings.currentOPSettings + '9'),
+                  Text('9' + widget.tSettings.currentOPSettings + '9'),
                 ),
                 CheckboxListTile(
                   value: _lvl2,
@@ -59,7 +79,7 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
                   },
                   title: Text('Level 2'),
                   secondary:
-                      Text('99' + widget.tSettings.currentOPSettings + '9'),
+                  Text('99' + widget.tSettings.currentOPSettings + '9'),
                 ),
                 CheckboxListTile(
                   value: _lvl3,
@@ -71,7 +91,7 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
                   },
                   title: Text('Level 3'),
                   secondary:
-                      Text('99' + widget.tSettings.currentOPSettings + '99'),
+                  Text('99' + widget.tSettings.currentOPSettings + '99'),
                 ),
                 CheckboxListTile(
                   value: _lvl4,
@@ -83,7 +103,7 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
                   },
                   title: Text('Level 4'),
                   secondary:
-                      Text('999' + widget.tSettings.currentOPSettings + '99'),
+                  Text('999' + widget.tSettings.currentOPSettings + '99'),
                 ),
                 CheckboxListTile(
                   value: _lvl5,
@@ -95,7 +115,7 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
                   },
                   title: Text('Level 5'),
                   secondary:
-                      Text('999' + widget.tSettings.currentOPSettings + '999'),
+                  Text('999' + widget.tSettings.currentOPSettings + '999'),
                 ),
                 CheckboxListTile(
                   value: _lvl6,
@@ -107,25 +127,37 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
                   },
                   title: Text('Level 6'),
                   secondary:
-                      Text('9999' + widget.tSettings.currentOPSettings + '999'),
+                  Text('9999' + widget.tSettings.currentOPSettings + '999'),
+                ),
+                CheckboxListTile(
+                  value: _lvl7,
+                  onChanged: (ch) {
+                    setState(() {
+                      _lvl7 = ch!;
+                      if (!canUncheck()) _lvl6 = true;
+                    });
+                  },
+                  title: Text('Level 7'),
+                  secondary:
+                  Text('9999' + widget.tSettings.currentOPSettings + '9999'),
+                ),
+                CheckboxListTile(
+                  value: _lvl8,
+                  onChanged: (ch) {
+                    setState(() {
+                      _lvl8 = ch!;
+                      if (!canUncheck()) _lvl8 = true;
+                    });
+                  },
+                  title: Text('Level 8'),
+                  secondary:
+                  Text('99999' + widget.tSettings.currentOPSettings + '9999'),
                 ),
               ],
             ),
           ),
-          SizedBox(
-            height: 20,
-          ),
-          SizedBox(
-              width: 120,
-              height: 40, // <-- Your width
-              child: ElevatedButton(
-                onPressed: () {
-                  _showStartTrainPage(context);
-                },
-                child: Text("Accept"),
-              )),
         ],
-      ),
+      ),),
     );
   }
 
@@ -138,6 +170,10 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
     if (_lvl4) levels.add(4);
     if (_lvl5) levels.add(5);
     if (_lvl6) levels.add(6);
+    if (_lvl7) levels.add(7);
+    if (_lvl8) levels.add(8);
+    if (_lvl9) levels.add(9);
+
     widget.tSettings.setLevels(_op, levels);
     //Navigator.of(context).pushNamed("/startTrain");
     Navigator.pushNamedAndRemoveUntil(context, "/startTrain", (r) => false);
@@ -145,7 +181,7 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
 
   bool canUncheck() {
     ///Can't unchecked if there is no other checked
-    return (_lvl1 || _lvl2 || _lvl3 || _lvl4 || _lvl5 || _lvl6);
+    return (_lvl1 || _lvl2 || _lvl3 || _lvl4 || _lvl5 || _lvl6 ||_lvl7||_lvl8||_lvl9);
   }
 
   @override
@@ -175,6 +211,15 @@ class _ConfigLevelsPageState extends State<ConfigLevelsPage> {
           break;
         case 6:
           _lvl6 = true;
+          break;
+        case 7:
+          _lvl7 = true;
+          break;
+        case 8:
+          _lvl8 = true;
+          break;
+        case 9:
+          _lvl9 = true;
           break;
       }
     }

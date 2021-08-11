@@ -15,7 +15,7 @@ class Save {
   //Contains the newly updated levels of a operation, first item has addition, second subtraction
   List<List<int>> updated = [];
   //Contains the max level of an operation
-  static int maxLevel = 6; //Current max level on operations (one more)
+  static int maxLevel = 10; //Current max level on operations (one more)
 
   late List<Archived> archivedSum;
   late List<Archived> archivedSub;
@@ -27,6 +27,7 @@ class Save {
     updateFile = json['updateFile'];
     archivedSum = Archived.readListFromJson(json['archivedSum']);
     archivedSub = Archived.readListFromJson(json['archivedSub']);
+    validateDataForUpdates();
   }
   
   Map<String, dynamic> toJson() => {
@@ -46,6 +47,33 @@ class Save {
     }
     _restartUpdate();
     _restartArchived();
+  }
+
+
+  void validateDataForUpdates(){
+    ///Reconstructs saves if updates
+    //Adding extra levels
+    if(resultsSub.length<maxLevel-1){
+      for (int i=0;i<=maxLevel-resultsSub.length;i++){
+        resultsSub.add(new OperationRegister(name: 'Subtraction', level: resultsSub.length+i-2));
+      }
+    }
+    if(resultsSum.length<maxLevel-1){
+      for (int i=0;i<=maxLevel-resultsSum.length;i++){
+        resultsSum.add(new OperationRegister(name: 'Addition', level: resultsSum.length+i-2));
+      }
+    }
+    if(archivedSub.length<maxLevel-1){
+      for (int i=0;i<=maxLevel-resultsSub.length;i++){
+        archivedSub.add(new Archived(MathProblems.OPSub, archivedSub.length+i));
+      }
+    }
+    if(archivedSum.length<maxLevel-1){
+      for (int i=0;i<=maxLevel-archivedSum.length;i++){
+        archivedSum.add(new Archived(MathProblems.OPSum, archivedSum.length+i));
+      }
+    }
+
   }
 
   List<OperationRegister> getResultsListByType(String type){
@@ -95,7 +123,6 @@ class Save {
       if(archives.bestAve>register.aveTotal || archives.bestAve==0)
         archives.bestAve=register.aveTotal;
     }
-
   }
 
   void updateSave(List<Problem> operations) {
@@ -144,6 +171,7 @@ class Save {
   }
   
   void saveToArchive(String type,int level){
+
     if (this.isValidSaveToArchive(type,level)){
       var archives = getArchivesListByType(type)[level];
       var register = getResultsListByType(type)[level];
@@ -191,6 +219,6 @@ class Save {
     archives.updateRecords();
   }
 
-  static int nLast1 = 10;
-  static int nLast2 = 50;
+  static final int nLast1 = 2;
+  static final int nLast2 = 3;
 }

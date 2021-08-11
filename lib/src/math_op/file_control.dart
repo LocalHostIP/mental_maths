@@ -5,6 +5,9 @@ import 'package:mental_maths/src/config.dart';
 import 'package:mental_maths/src/math_op/save.dart';
 import 'package:path_provider/path_provider.dart';
 
+
+///data/user/0/com.dlocalp.mental_maths/app_flutter
+
 class FileControl {
   ///Controls results savings and file for saving
   Save save = new Save();
@@ -21,12 +24,12 @@ class FileControl {
 
   Future<void> iniConfig() async{
     settings = await readConfig();
-    print(settings.extraTime);
   }
 
   Future<String> get _localPath async {
     ///Returns default path for the saving file
     final directory = await getApplicationDocumentsDirectory();
+    print(directory.path);
     return directory.path;
   }
 
@@ -62,6 +65,7 @@ class FileControl {
       final contents = await file.readAsString();
       return Save.fromJson(jsonDecode(contents));
     } catch (e) {
+      print('error on reading resulst file');
       print(e.toString());
       final file = await _localFile(nameResultsFile); //Create file if error
       await saveResults();

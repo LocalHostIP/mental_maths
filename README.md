@@ -1,6 +1,6 @@
 # mental_maths
 
-Practice mental math operations
+Solve maths operations and compare your times
 
 ## Getting Started
 

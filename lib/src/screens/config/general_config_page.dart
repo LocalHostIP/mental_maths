@@ -23,6 +23,7 @@ class _ConfigPageState extends State<ConfigPage> {
       drawer: getDrawer(context),
       body:
       SettingsList(
+        contentPadding: EdgeInsets.only(left: 0,top: 20,right: 0,bottom: 0),
         sections: [
           SettingsSection(
             title: 'Interface',

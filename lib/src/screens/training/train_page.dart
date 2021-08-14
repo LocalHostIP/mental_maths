@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
 import 'package:mental_maths/src/math_op/file_control.dart';
+import 'package:mental_maths/src/ranking/ranking_save.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
 import '../../config.dart';
@@ -15,9 +16,10 @@ class TrainPage extends StatefulWidget {
   Settings settings;
   TrainingSettings trainSettings; //General settings, including Type of problems
   FileControl savings;
+  RankingSave rankingSave;
   late Save _results; //Register of results
 
-  TrainPage({Key? key, required this.trainSettings,required this.savings,required this.settings}) : super(key: key){
+  TrainPage({Key? key, required this.trainSettings,required this.savings,required this.settings,required this.rankingSave}) : super(key: key){
     _results = savings.save;
   }
 
@@ -296,6 +298,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
   void _showResults(BuildContext context){
     //update results
     widget._results.updateSave(_mathProblem.operations);
+    widget.rankingSave.update(widget._results);
     //save results
     widget.savings.saveResults();
     //Open results page

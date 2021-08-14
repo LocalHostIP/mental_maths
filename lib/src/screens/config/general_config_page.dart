@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mental_maths/src/math_op/file_control.dart';
+import 'package:mental_maths/src/ranking/ranking_save.dart';
 import 'package:mental_maths/src/widgets/drawer.dart';
+import 'package:mental_maths/src/widgets/set_name_widget.dart';
 import 'package:settings_ui/settings_ui.dart';
 
-import '../../config.dart';
-
+//ignore: must_be_immutable
 class ConfigPage extends StatefulWidget {
-  ConfigPage({Key? key,required this.fileControl}) : super(key: key);
+  RankingSave rankingSave;
+  ConfigPage({Key? key,required this.fileControl,required this.rankingSave}) : super(key: key);
   FileControl fileControl;
   @override
   _ConfigPageState createState() => _ConfigPageState();
@@ -14,6 +16,14 @@ class ConfigPage extends StatefulWidget {
 
 class _ConfigPageState extends State<ConfigPage> {
   double seconds = 7;
+  late String name;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    name=widget.rankingSave.name;
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,6 +57,18 @@ class _ConfigPageState extends State<ConfigPage> {
                 },),
             ],
           ),
+          SettingsSection(
+            title: 'Global ranking',
+            tiles: [
+              SettingsTile(
+                title: 'Change name',
+                subtitle: name,
+                leading: Icon(Icons.drive_file_rename_outline),
+                onPressed: (BuildContext context){
+                  _showSetNameWidget();
+                },),
+            ],
+          ),
         ],
       ),
     );
@@ -62,11 +84,26 @@ class _ConfigPageState extends State<ConfigPage> {
     );
   }
 
+  _showSetNameWidget() async{
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return new SetNameWidget(rankingSave: widget.rankingSave,canCancel: true);
+        }
+    ).then((value){
+      setState(() {
+        name=widget.rankingSave.name;
+      });
+    });
+  }
+
 }
 
 // move the dialog into it's own stateful widget.
 // It's completely independent from your page
 // this is good practice
+//ignore: must_be_immutable
 class SetExtraTimeDialog extends StatefulWidget {
   /// initial selection for the slider
   

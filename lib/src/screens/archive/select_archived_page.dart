@@ -16,8 +16,8 @@ class SelectArchivedPage extends StatefulWidget {
 }
 
 class _SelectArchivedPageState extends State<SelectArchivedPage> {
-  @override
   late Save save;
+  @override
   Widget build(BuildContext context) {
     save = widget.save;
     return MaterialApp(
@@ -103,7 +103,7 @@ class _SelectArchivedPageState extends State<SelectArchivedPage> {
         ),
       ));
     }
-
     return list;
   }
 }
+

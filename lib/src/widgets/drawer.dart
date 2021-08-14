@@ -48,6 +48,14 @@ getDrawer(BuildContext context) {
           },
         ),
         ListTile(
+          title: Text('Global Ranking'),
+          leading: Icon(Icons.g_mobiledata),
+          onTap: () {
+            Navigator.pushReplacementNamed(
+                context, "/ranking");
+          },
+        ),
+        ListTile(
           title: Text('Settings'),
           leading: Icon(Icons.settings),
           onTap: () {

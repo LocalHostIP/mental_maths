@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mental_maths/src/config.dart';
 import 'package:mental_maths/src/math_op/file_control.dart';
+import 'package:mental_maths/src/ranking/ranking_save.dart';
 import 'package:mental_maths/src/screens/config/keyboard_size_page.dart';
+import 'package:mental_maths/src/screens/rankings/raking_page.dart';
 import 'package:mental_maths/src/screens/training/all_results_page.dart';
 import 'package:mental_maths/src/screens/archive/current_selected_archived_page.dart';
 import 'package:mental_maths/src/screens/config/general_config_page.dart';
@@ -15,6 +17,7 @@ class MyApp extends StatelessWidget {//ignore: must_be_immutable
   TrainingSettings trainSettings = new TrainingSettings(); //Controls training settings
   FileControl fileControl = new FileControl(); //Controls savings and file savings
   CurrentSelected currentSelected = new CurrentSelected();
+  RankingSave rankingSave = new RankingSave();
 
   MyApp() {
     fileControl.iniResults(); //Reads file savings
@@ -35,7 +38,7 @@ class MyApp extends StatelessWidget {//ignore: must_be_immutable
         '/startTrain': (BuildContext context) =>
             StartTrainPage(tSettings: trainSettings),
         '/trainer': (BuildContext context) =>
-            TrainPage(trainSettings: trainSettings, savings: fileControl,settings: fileControl.settings),
+            TrainPage(trainSettings: trainSettings, savings: fileControl,settings: fileControl.settings,rankingSave: rankingSave,),
         '/resultsPage': (BuildContext context) =>
             TrainResultsPage(results: fileControl.save),
         '/allResultsPage': (BuildContext context) =>
@@ -47,9 +50,11 @@ class MyApp extends StatelessWidget {//ignore: must_be_immutable
         '/selectedArchived' : (BuildContext context) =>
             SelectedArchivePage(archived: currentSelected.currentArchived,saving: fileControl),
         '/config' : (BuildContext context) =>
-            ConfigPage(fileControl: fileControl),
+            ConfigPage(fileControl: fileControl,rankingSave: rankingSave,),
         '/config/keyboardSize': (BuildContext context) =>
             KeyboardSizePage(fileControl: fileControl),
+        '/ranking': (BuildContext context) =>
+            RankingPage(rankingSave: rankingSave,),
       },
     );
   }

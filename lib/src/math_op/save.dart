@@ -106,7 +106,6 @@ class Save {
   }
 
   void _updateArchive(String type,int level){
-    
     var archives = getArchivesListByType(type)[level];
     var register = getResultsListByType(type)[level];
     

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "522274811249",
+    "project_id": "mental-maths-abdea",
+    "storage_bucket": "mental-maths-abdea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522274811249:android:fb03f26d6252a9b903dad0",
+        "android_client_info": {
+          "package_name": "com.dlocalp.mental_maths"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "522274811249-fbe74tbsr0dc2s7opgv5qur3gm6i3s66.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVGpYuTnMpBlMdqWzMkzuG6JE4JtihVKg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "522274811249-fbe74tbsr0dc2s7opgv5qur3gm6i3s66.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

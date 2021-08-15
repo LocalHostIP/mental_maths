@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mental_maths/src/math_op/file_control.dart';
+import 'package:mental_maths/src/file_control.dart';
 import 'package:mental_maths/src/ranking/ranking_save.dart';
 import 'package:mental_maths/src/widgets/drawer.dart';
 import 'package:mental_maths/src/widgets/set_name_widget.dart';
@@ -89,7 +89,7 @@ class _ConfigPageState extends State<ConfigPage> {
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return new SetNameWidget(rankingSave: widget.rankingSave,canCancel: true);
+          return new SetNameWidget(rankingSave: widget.rankingSave,canCancel: true,fileControl: widget.fileControl,);
         }
     ).then((value){
       setState(() {

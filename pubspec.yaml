@@ -34,10 +34,14 @@ dependencies:
   settings_ui:
   firebase_core:
   cloud_firestore:
+  hive: ^2.0.4
+  hive_flutter:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner:
+  hive_generator:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

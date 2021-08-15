@@ -7,6 +7,7 @@ import 'package:mental_maths/src/app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); //Necessary to read saving files
+
   Firebase.initializeApp().then((value){
     runApp(MyApp());
   });

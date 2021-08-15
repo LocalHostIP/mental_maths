@@ -3,7 +3,7 @@ import 'package:mental_maths/src/ranking/ranking_save.dart';
 
 class RankingFirebase{
 
-  int max=5;
+  int max=50;
   RankingSave rankingSave;
   double ave=0;
   int pos=0;
@@ -12,8 +12,7 @@ class RankingFirebase{
   Future<List<Rank>> getRankings(String op,int level,int typeLast) async {
     ///Gets sorted rankings
     CollectionReference collection = FirebaseFirestore.instance.collection(op+'_L'+level.toString()+'V'+typeLast.toString());
-
-    QuerySnapshot records = await collection.orderBy('ave',descending: false).limitToLast(max).get();
+    QuerySnapshot records = await collection.orderBy('ave',descending: false).limitToLast(max+3).get();
 
     List<Rank> list = [];
     bool saveNew=true;
@@ -31,7 +30,10 @@ class RankingFirebase{
       if(typeLast==2)
         newRecord=Rank(position: -1, ave: rankingSave.subtractionL1[level], name: rankingSave.name);
     }
+
     newRecord.isMain=true;
+    if(newRecord.ave==-1 || newRecord.ave==0)
+      saveNew=false;
     ave=newRecord.ave.toDouble();
 
     Map<String, dynamic> data;
@@ -40,17 +42,19 @@ class RankingFirebase{
       for (var doc in records.docs) {
         pos++;
         data = doc.data()! as Map<String, dynamic>;
-        if(newRecord.ave!=-1 && newRecord.ave<=data['ave'] && saveNew && newRecord.position==-1){
-          //Set new record and add to database
+        if(newRecord.ave<=data['ave'] && saveNew){
+          //Insert new record and add to database
           newRecord.position=pos;
           this.pos=pos;
           collection.add({'name':newRecord.name,'ave':newRecord.ave});
+          list.add(newRecord);
           pos++;
+          saveNew=false;
         }
         if(data['name']==newRecord.name){
-          if(newRecord.ave<=data['ave']){
+          if(newRecord.ave<=data['ave'] &&(newRecord.ave!=0 && newRecord.ave!=-1)){
             //Replace old record
-            //collection.doc(data['id']);
+            pos--;
             doc.reference.delete();
           }else{
             //Maintain old record
@@ -60,14 +64,23 @@ class RankingFirebase{
             list.last.isMain=true;
           }
         }else{
+          //Add record to list
           list.add(Rank(ave: data['ave'],name: data['name'],position: pos));
         }
       }
-      if (newRecord.position!=-1){
-        list.insert(newRecord.position-1,newRecord);
+      if(records.docs.length<max && saveNew && newRecord.position==-1){
+        //Set new record at last
+        newRecord.position=pos;
+        this.pos=pos;
+        collection.add({'name':newRecord.name,'ave':newRecord.ave});
+        list.add(newRecord);
+      }else if(records.docs.length>=max){
+        //Deleting las record
+        collection.doc(records.docs.last.id).delete();
       }
-    }else if(newRecord.ave!=-1 && newRecord.ave!=0){
-      newRecord.position=1;
+    }else if(saveNew){
+      //Setting first new record
+      newRecord.position=pos;
       this.pos=newRecord.position;
       collection.add({'name':newRecord.name,'ave':newRecord.ave});
       list.add(newRecord);

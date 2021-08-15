@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mental_maths/src/config.dart';
 import 'package:mental_maths/src/math_op/save.dart';
+import 'package:mental_maths/src/ranking/ranking_save.dart';
 import 'package:path_provider/path_provider.dart';
 
 
@@ -12,9 +14,11 @@ class FileControl {
   ///Controls results savings and file for saving
   Save save = new Save();
   Settings settings = new Settings();
-  
+  RankingSave rankingSave = RankingSave();
+  late var box;
   String nameResultsFile = '/results.json';
   String nameConfigFile = '/config.json';
+  String nameRankFile = '/rank.json';
   
   Future<void> iniResults() async {
     ///Reads and validates results save
@@ -24,6 +28,21 @@ class FileControl {
 
   Future<void> iniConfig() async{
     settings = await readConfig();
+  }
+
+  Future<void> iniRank() async{
+
+    await Hive.initFlutter();
+    Hive.registerAdapter(RankingSaveAdapter());
+    await Hive.openBox('mainBox');
+    var box = Hive.box('mainBox');
+
+    if (box.length==0){
+      rankingSave=new RankingSave();
+      box.put('rank',rankingSave);
+    }else{
+      rankingSave=box.get('rank');
+    }
   }
 
   Future<String> get _localPath async {
@@ -50,6 +69,11 @@ class FileControl {
     ///Save on file
     final file = await _localFile(nameConfigFile);
     return file.writeAsString(json.encode(settings.toJson()));
+  }
+
+  void saveRank() async {
+    ///Save on file
+    rankingSave.save();
   }
 
   Future<Save> readResults() async {

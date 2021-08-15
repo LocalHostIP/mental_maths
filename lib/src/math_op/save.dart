@@ -8,6 +8,8 @@ class Save {
   ///Contains and controls current save
   static double updateFileCode = 0.0002; //For controlling version of saves
   double updateFile = Save.updateFileCode;
+  static final int nLast1 = 10;
+  static final int nLast2 = 50;
 
   //All levels of operation, each position of the list is a corresponding level
   List<OperationRegister> resultsSum = [];
@@ -218,6 +220,13 @@ class Save {
     archives.updateRecords();
   }
 
-  static final int nLast1 = 2;
-  static final int nLast2 = 3;
+  void restartAverages(){
+    resultsSum = [];
+    resultsSub = [];
+    for (int l = 1; l <= maxLevel; l++) {
+      resultsSum.add(OperationRegister(name: 'Addition', level: l - 1));
+      resultsSub.add(OperationRegister(name: 'Subtraction', level: l - 1));
+    }
+    _restartUpdate();
+  }
 }

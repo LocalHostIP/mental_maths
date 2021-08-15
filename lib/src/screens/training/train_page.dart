@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
-import 'package:mental_maths/src/math_op/file_control.dart';
+import 'package:mental_maths/src/file_control.dart';
 import 'package:mental_maths/src/ranking/ranking_save.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
@@ -62,86 +62,95 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     /// Widget for training ///
     TextStyle _inputStyle = TextStyle(fontSize: height*0.055,color: _colorInput);
     return Column(
-    mainAxisAlignment:MainAxisAlignment.center,
+    mainAxisAlignment:MainAxisAlignment.spaceAround,
     children: [
-      //Info
-      SizedBox(
-        width: width*0.75,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      Column(
         children: [
-          Expanded(child: Text((_mathProblem.currentIndex+1).toString()+'/'+_mathProblem.limit.toString(),
-              style: TextStyle(color: Colors.black45,fontWeight: FontWeight.bold),textAlign: TextAlign.center)),
-          FadeTransition(opacity: _opacityTimePenalText,
-          child: Text(_timeInfo,style: _timeTextStyle))
-        ],
-      ),),
-      //Operation card
-      Card(
-        child: SizedBox(
-          width: width*0.75,
-          height: height*0.25,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              _getOperationWidget(width,height),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+          //Info
+          SizedBox(
+            width: width*0.75,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(child: Text((_mathProblem.currentIndex+1).toString()+'/'+_mathProblem.limit.toString(),
+                    style: TextStyle(color: Colors.black45,fontWeight: FontWeight.bold),textAlign: TextAlign.center)),
+                FadeTransition(opacity: _opacityTimePenalText,
+                    child: Text(_timeInfo,style: _timeTextStyle))
+              ],
+            ),),
+          //Operation card
+          Card(
+            child: SizedBox(
+              width: width*0.75,
+              height: height*0.25,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  TextButton(onPressed: (){_showOperation();_showTimePenal(1+_mathProblem.getLevel());}, child: Text('View')),
+                  _getOperationWidget(width,height),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(onPressed: (){_showOperation();_showTimePenal(1+_mathProblem.getLevel());}, child: Text('View')),
+                    ],
+                  )
                 ],
-              )
-            ],
-          ),
-        ),
-      ),
-      //Input card
-      Card(
-        child: SizedBox(
-          width: width*0.75,
-          height: height*0.11,
-
-          child: TextField(
-            controller: _controllerField,
-            style: _inputStyle,
-            autofocus: true,
-            textAlign: TextAlign.center,
-            showCursor: true,
-            readOnly: (Platform.isAndroid || Platform.isIOS),
-            focusNode: _focusNodeField,
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-            ],
-            onTap: (){SystemChannels.textInput.invokeMethod('TextInput.hide');},
-            decoration: new InputDecoration(
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              contentPadding:
-                EdgeInsets.only(left: 15, bottom: 0, top: 11, right: 15),
+              ),
             ),
-            onSubmitted: (ch)=>_inputChanged(ch,submitted: true),
           ),
+          //Input card
+          Card(
+            child: SizedBox(
+              width: width*0.75,
+              height: height*0.11,
 
-        ),
+              child: TextField(
+                controller: _controllerField,
+                style: _inputStyle,
+                autofocus: true,
+                textAlign: TextAlign.center,
+                showCursor: true,
+                readOnly: (Platform.isAndroid || Platform.isIOS),
+                focusNode: _focusNodeField,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                ],
+                onTap: (){SystemChannels.textInput.invokeMethod('TextInput.hide');},
+                decoration: new InputDecoration(
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  contentPadding:
+                  EdgeInsets.only(left: 15, bottom: 0, top: 11, right: 15),
+                ),
+                onSubmitted: (ch)=>_inputChanged(ch,submitted: true),
+              ),
+
+            ),
+          ),
+          //Separation
+          SizedBox(width: 10,height: 30),
+        ],
       ),
-      //Separation
-      SizedBox(width: 10,height: 30),
-      //Keyboard
-      Container(
-        child: VirtualKeyboard(
-          height: height * (widget.settings.keyboardHeight/100),
-          width: (widget.settings.keyboardWidth/100) * width,
-          textColor: Colors.black54,
-          fontSize: 20,
-          defaultLayouts: [VirtualKeyboardDefaultLayouts.English],
-          type: VirtualKeyboardType.Numeric,
-          onKeyPress: (key)=>_keyPressed(key),
+      Column(children: [
+        //Keyboard
+        Container(
+          child: VirtualKeyboard(
+            height: height * (widget.settings.keyboardHeight/100),
+            width: (widget.settings.keyboardWidth/100) * width,
+            textColor: Colors.black54,
+            fontSize: 20,
+            defaultLayouts: [VirtualKeyboardDefaultLayouts.English],
+            type: VirtualKeyboardType.Numeric,
+            onKeyPress: (key)=>_keyPressed(key),
+          ),
         ),
-      )
+        SizedBox(
+          height: 10,
+        )
+      ],)
     ],
     );
   }
@@ -301,6 +310,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     widget.rankingSave.update(widget._results);
     //save results
     widget.savings.saveResults();
+    widget.savings.saveRank();
     //Open results page
     Navigator.pushReplacementNamed(context, '/resultsPage');
   }

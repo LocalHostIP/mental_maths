@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mental_maths/src/file_control.dart';
 import 'package:mental_maths/src/ranking/ranking_firebase.dart';
 import 'package:mental_maths/src/ranking/ranking_save.dart';
 import 'package:mental_maths/src/widgets/drawer.dart';
@@ -6,7 +7,8 @@ import 'package:mental_maths/src/widgets/set_name_widget.dart';
 
 //ignore: must_be_immutable
 class RankingPage extends StatefulWidget {
-  RankingPage({Key? key,required this.rankingSave}) : super(key: key);
+  FileControl fileControl;
+  RankingPage({Key? key,required this.rankingSave,required this.fileControl}) : super(key: key);
   RankingSave rankingSave;
   @override
   _RankingPageState createState() => _RankingPageState();
@@ -72,7 +74,7 @@ class _RankingPageState extends State<RankingPage> with SingleTickerProviderStat
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return new SetNameWidget(rankingSave: widget.rankingSave,canCancel: false,);
+          return new SetNameWidget(rankingSave: widget.rankingSave,canCancel: false,fileControl: this.widget.fileControl,);
         }
     ).then((value){
       if(!widget.rankingSave.isNameSet){
@@ -109,7 +111,7 @@ class _RankingPageState extends State<RankingPage> with SingleTickerProviderStat
                                 height: 5,
                               ),
                               Text(
-                                'Ranking: '+_rankingFirebase.pos.toString(),
+                                'Name position: '+_rankingFirebase.pos.toString(),
                                 style: TextStyle(fontSize: 16),
                               ),
                               Divider(

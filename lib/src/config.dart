@@ -2,6 +2,8 @@
 import 'package:mental_maths/src/math_op/archived.dart';
 import 'package:mental_maths/src/math_op/math_problems.dart';
 
+import 'math_op/save.dart';
+
 class CurrentSelected{
   Archived currentArchived = new Archived(MathProblems.OPSum, 1);
 }
@@ -62,4 +64,47 @@ class TrainingSettings {
     return [];
   }
 
+}
+
+class DatabaseCache{
+
+  late List<List<bool>> additionFromCache;
+  late List<List<bool>> subtractionFromCache;
+
+  DatabaseCache(Save save){
+    additionFromCache=[[],[]];
+    subtractionFromCache=[[],[]];
+    for (int i=0;i<=Save.maxLevel;i++){
+      additionFromCache[0].add(false);
+      additionFromCache[1].add(false);
+    }
+    for (int i=0;i<=Save.maxLevel;i++){
+      subtractionFromCache[0].add(false);
+      subtractionFromCache[1].add(false);
+    }
+  }
+
+  bool fromCache(String op,int level,int typeLast){
+    if(op=='addition'){
+      return additionFromCache[typeLast-1][level];
+    }else{
+      return subtractionFromCache[typeLast-1][level];
+    }
+  }
+
+  void disableFromCache(String op,int level, int typeLast){
+    if(op=='addition'){
+      additionFromCache[typeLast-1][level] = false;
+    }else{
+      subtractionFromCache[typeLast-1][level] = false;
+    }
+  }
+
+  void enableFromCache(String op,int level, int typeLast){
+    if(op=='addition'){
+      additionFromCache[typeLast-1][level] = true;
+    }else{
+      subtractionFromCache[typeLast-1][level] = true;
+    }
+  }
 }

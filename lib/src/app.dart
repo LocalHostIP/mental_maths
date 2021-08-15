@@ -17,11 +17,13 @@ class MyApp extends StatelessWidget {//ignore: must_be_immutable
   TrainingSettings trainSettings = new TrainingSettings(); //Controls training settings
   FileControl fileControl = new FileControl(); //Controls savings and file savings
   CurrentSelected currentSelected = new CurrentSelected();
+  late DatabaseCache dtCache;
 
   MyApp() {
     fileControl.iniResults(); //Reads file savings
     fileControl.iniConfig();
     fileControl.iniRank();
+    dtCache=new DatabaseCache(fileControl.save);
   }
 
   @override
@@ -54,7 +56,7 @@ class MyApp extends StatelessWidget {//ignore: must_be_immutable
         '/config/keyboardSize': (BuildContext context) =>
             KeyboardSizePage(fileControl: fileControl),
         '/ranking': (BuildContext context) =>
-            RankingPage(rankingSave: fileControl.rankingSave,fileControl: fileControl,),
+            RankingPage(rankingSave: fileControl.rankingSave,fileControl: fileControl,dtCache: dtCache),
       },
     );
   }

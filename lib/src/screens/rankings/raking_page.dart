@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mental_maths/src/config.dart';
 import 'package:mental_maths/src/file_control.dart';
 import 'package:mental_maths/src/ranking/ranking_firebase.dart';
 import 'package:mental_maths/src/ranking/ranking_save.dart';
@@ -8,8 +9,9 @@ import 'package:mental_maths/src/screens/config/set_name_widget.dart';
 //ignore: must_be_immutable
 class RankingPage extends StatefulWidget {
   FileControl fileControl;
-  RankingPage({Key? key,required this.rankingSave,required this.fileControl}) : super(key: key);
+  RankingPage({Key? key,required this.rankingSave,required this.fileControl,required this.dtCache}) : super(key: key);
   RankingSave rankingSave;
+  DatabaseCache dtCache;
   @override
   _RankingPageState createState() => _RankingPageState();
 }
@@ -178,7 +180,7 @@ class _RankingPageState extends State<RankingPage> with SingleTickerProviderStat
     // TODO: implement initState
     //getUsers();
     super.initState();
-    _rankingFirebase = RankingFirebase(widget.rankingSave);
+    _rankingFirebase = RankingFirebase(widget.rankingSave,widget.dtCache);
     _tableSum=Image(image: AssetImage('assets/loading.gif'));
     _tableSub=Image(image: AssetImage('assets/loading.gif'));
 

@@ -1,22 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mental_maths/src/ranking/ranking_save.dart';
 
+import '../config.dart';
+
 class RankingFirebase{
 
   int max=50;
   RankingSave rankingSave;
   double ave=0;
   int pos=0;
-  RankingFirebase(this.rankingSave);
+  DatabaseCache dtCache;
+  bool _enableNextCounter=true;
+  int _cacheDuration=120;
+
+  RankingFirebase(this.rankingSave,this.dtCache);
 
   Future<List<Rank>> getRankings(String op,int level,int typeLast) async {
     ///Gets sorted rankings
     CollectionReference collection = FirebaseFirestore.instance.collection(op+'_L'+level.toString()+'V'+typeLast.toString());
-    QuerySnapshot records = await collection.orderBy('ave',descending: false).limitToLast(max+3).get();
+
+    //Get documents from cache or online
+    QuerySnapshot records;
+    print(dtCache.fromCache(op, level, typeLast));
+    if(dtCache.fromCache(op, level, typeLast)){
+      print('from cache');
+      records = await collection.orderBy('ave',descending: false).limitToLast(max+2).get(GetOptions(source: Source.cache));
+    }else{
+      print('from database');
+      records = await collection.orderBy('ave',descending: false).limitToLast(max+2).get();
+      dtCache.enableFromCache(op, level, typeLast);
+      if(_enableNextCounter){
+        Future.delayed(Duration(seconds: _cacheDuration),(){
+          print('cache disable');
+          dtCache.disableFromCache(op, level, typeLast);
+          _enableNextCounter=true;
+        });
+        _enableNextCounter=false;
+      }
+    }
 
     List<Rank> list = [];
     bool saveNew=true;
 
+    //Get actual record
     Rank newRecord = new Rank(position: -1, ave: -1, name: 'Unset');
     if(op=='addition'){
       if(typeLast==1)
@@ -36,6 +62,7 @@ class RankingFirebase{
       saveNew=false;
     ave=newRecord.ave.toDouble();
 
+    //Read all records
     Map<String, dynamic> data;
     if (records.docs.length != 0) {
       int pos=0;
@@ -88,6 +115,7 @@ class RankingFirebase{
 
     return list;
   }
+
 }
 
 class Rank{

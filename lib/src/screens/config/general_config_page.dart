@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mental_maths/src/file_control.dart';
 import 'package:mental_maths/src/ranking/ranking_save.dart';
 import 'package:mental_maths/src/widgets/drawer.dart';
-import 'package:mental_maths/src/widgets/set_name_widget.dart';
+import 'package:mental_maths/src/screens/config/set_name_widget.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 //ignore: must_be_immutable

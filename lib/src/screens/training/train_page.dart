@@ -62,10 +62,11 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
     /// Widget for training ///
     TextStyle _inputStyle = TextStyle(fontSize: height*0.055,color: _colorInput);
     return Column(
-    mainAxisAlignment:MainAxisAlignment.spaceAround,
+    mainAxisAlignment:MainAxisAlignment.spaceBetween,
     children: [
       Column(
         children: [
+          SizedBox(height: 15,),
           //Info
           SizedBox(
             width: width*0.75,
@@ -148,7 +149,7 @@ class _TrainPageState extends State<TrainPage> with TickerProviderStateMixin{
           ),
         ),
         SizedBox(
-          height: 10,
+          height: 20,
         )
       ],)
     ],

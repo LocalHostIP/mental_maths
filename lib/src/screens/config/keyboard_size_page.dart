@@ -43,20 +43,22 @@ class _KeyboardSizePageState extends State<KeyboardSizePage> {
     /// Widget for training ///
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        //Operation card
-        Card(
-          child: SizedBox(
-            width: width * 0.75,
-            height: height * 0.36,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    SizedBox(height: 10,),
-                    Text('Width : '+(widget.uiSettings.keyboardWidth.round().toString())+'%',style: TextStyle(color: Colors.black87,fontSize: 13),),
+        Column(children: [
+          SizedBox(height: 15,),
+          //Operation card
+          Card(
+            child: SizedBox(
+              width: width * 0.75,
+              height: height * 0.36,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(height: 10,),
+                      Text('Width : '+(widget.uiSettings.keyboardWidth.round().toString())+'%',style: TextStyle(color: Colors.black87,fontSize: 13),),
                       Slider(
                         value: widget.uiSettings.keyboardWidth,
                         onChanged: (ch) {
@@ -69,37 +71,43 @@ class _KeyboardSizePageState extends State<KeyboardSizePage> {
                         label: widget.uiSettings.keyboardWidth.round().toString(),
                         divisions: 40,
                       ),
-                    Text('Height : '+(widget.uiSettings.keyboardHeight.round().toString())+'%',style: TextStyle(color: Colors.black87,fontSize: 13),),
-                    Slider(
-                      value: widget.uiSettings.keyboardHeight,
-                      onChanged: (ch) {
-                        setState(() {
-                          widget.uiSettings.keyboardHeight = ch;
-                        });
-                      },
-                      max: 50,
-                      min: 20,
-                      label: widget.uiSettings.keyboardHeight.round().toString(),
-                      divisions: 30,
-                    ),
-                  ],
-                )
-              ],
+                      Text('Height : '+(widget.uiSettings.keyboardHeight.round().toString())+'%',style: TextStyle(color: Colors.black87,fontSize: 13),),
+                      Slider(
+                        value: widget.uiSettings.keyboardHeight,
+                        onChanged: (ch) {
+                          setState(() {
+                            widget.uiSettings.keyboardHeight = ch;
+                          });
+                        },
+                        max: 50,
+                        min: 20,
+                        label: widget.uiSettings.keyboardHeight.round().toString(),
+                        divisions: 30,
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-        //Separation
-        SizedBox(width: 10, height: 30),
+          //Separation
+          SizedBox(width: 10, height: 30),
+        ],),
         //Keyboard
-        Container(
-          child: VirtualKeyboard(
-            height: height * (widget.uiSettings.keyboardHeight/100),
-            width: (widget.uiSettings.keyboardWidth/100) * width,
-            textColor: Colors.black54,
-            fontSize: 20,
-            defaultLayouts: [VirtualKeyboardDefaultLayouts.English],
-            type: VirtualKeyboardType.Numeric,
-          ),
+        Column(
+          children: [
+            Container(
+              child: VirtualKeyboard(
+                height: height * (widget.uiSettings.keyboardHeight/100),
+                width: (widget.uiSettings.keyboardWidth/100) * width,
+                textColor: Colors.black54,
+                fontSize: 20,
+                defaultLayouts: [VirtualKeyboardDefaultLayouts.English],
+                type: VirtualKeyboardType.Numeric,
+              ),
+            ),
+            SizedBox(height: 20,)
+          ],
         )
       ],
     );
